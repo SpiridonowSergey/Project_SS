@@ -2,12 +2,21 @@ import { Link } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useHomeGreeting } from '@/features/user/hooks/useHomeGreeting';
+
 export default function HomeScreen() {
+  const { greeting, childAgeLabel } = useHomeGreeting();
+
   return (
     <View className="flex-1 bg-rose-50">
       <SafeAreaView style={{ flex: 1 }}>
         <View className="flex-1 justify-center gap-6 px-6">
-          <Text className="text-3xl font-bold text-rose-500">Привет, мама!</Text>
+          <View className="gap-2">
+            <Text className="text-3xl font-bold text-rose-500">{greeting}</Text>
+            {childAgeLabel ? (
+              <Text className="text-base text-stone-600">{childAgeLabel}</Text>
+            ) : null}
+          </View>
 
           <Link href="/recipes" asChild>
             <Pressable className="rounded-2xl bg-white p-5 shadow-sm active:opacity-80">
