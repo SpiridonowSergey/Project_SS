@@ -55,6 +55,45 @@ export function isValidIsoDate(value: string) {
     return false;
   }
 
-  const date = new Date(value);
+  const date = new Date(`${value}T00:00:00`);
   return !Number.isNaN(date.getTime());
+}
+
+const MONTHS_RU = [
+  'января',
+  'февраля',
+  'марта',
+  'апреля',
+  'мая',
+  'июня',
+  'июля',
+  'августа',
+  'сентября',
+  'октября',
+  'ноября',
+  'декабря',
+] as const;
+
+export function toIsoDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export function parseIsoDate(value: string) {
+  if (!isValidIsoDate(value)) {
+    return null;
+  }
+
+  return new Date(`${value}T00:00:00`);
+}
+
+export function formatDisplayDate(value: string) {
+  const date = parseIsoDate(value);
+  if (!date) {
+    return null;
+  }
+
+  return `${date.getDate()} ${MONTHS_RU[date.getMonth()]} ${date.getFullYear()}`;
 }

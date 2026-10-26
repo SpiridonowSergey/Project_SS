@@ -1,14 +1,50 @@
+import type { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { Platform } from 'react-native';
 
 import { useUserStore } from '@/features/user/store';
-import { isValidIsoDate } from '@/features/user/utils/formatChildAge';
+import {
+  formatDisplayDate,
+  isValidIsoDate,
+  parseIsoDate,
+  toIsoDate,
+} from '@/features/user/utils/formatChildAge';
 
 export function useOnboarding() {
   const completeOnboarding = useUserStore((state) => state.completeOnboarding);
+  const setStoredChildBirthDate = useUserStore((state) => state.setChildBirthDate);
+
   const [motherName, setMotherName] = useState('');
   const [childBirthDate, setChildBirthDate] = useState('');
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const selectedDate = parseIsoDate(childBirthDate) ?? new Date();
+  const displayDate = formatDisplayDate(childBirthDate);
+
+  function openDatePicker() {
+    setIsDatePickerVisible(true);
+  }
+
+  function closeDatePicker() {
+    setIsDatePickerVisible(false);
+  }
+
+  function handleDateChange(event: DateTimePickerEvent, date?: Date) {
+    if (Platform.OS === 'android') {
+      setIsDatePickerVisible(false);
+    }
+
+    if (event.type === 'dismissed' || !date) {
+      return;
+    }
+
+    const isoDate = toIsoDate(date);
+    setChildBirthDate(isoDate);
+    setStoredChildBirthDate(isoDate);
+    setError(null);
+  }
 
   function submit() {
     const trimmedName = motherName.trim();
@@ -19,7 +55,7 @@ export function useOnboarding() {
     }
 
     if (!isValidIsoDate(childBirthDate)) {
-      setError('Введите дату в формате ГГГГ-ММ-ДД');
+      setError('Выберите дату рождения ребёнка');
       return;
     }
 
@@ -33,10 +69,14 @@ export function useOnboarding() {
 
   return {
     motherName,
-    childBirthDate,
+    displayDate,
+    selectedDate,
+    isDatePickerVisible,
     error,
     setMotherName,
-    setChildBirthDate,
+    openDatePicker,
+    closeDatePicker,
+    handleDateChange,
     submit,
   };
 }

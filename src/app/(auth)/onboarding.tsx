@@ -1,4 +1,5 @@
-import { Pressable, Text, TextInput, View } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useOnboarding } from '@/features/user/hooks/useOnboarding';
@@ -6,10 +7,14 @@ import { useOnboarding } from '@/features/user/hooks/useOnboarding';
 export default function OnboardingScreen() {
   const {
     motherName,
-    childBirthDate,
+    displayDate,
+    selectedDate,
+    isDatePickerVisible,
     error,
     setMotherName,
-    setChildBirthDate,
+    openDatePicker,
+    closeDatePicker,
+    handleDateChange,
     submit,
   } = useOnboarding();
 
@@ -39,14 +44,33 @@ export default function OnboardingScreen() {
 
             <View className="gap-2">
               <Text className="text-sm font-medium text-stone-600">Дата рождения ребёнка</Text>
-              <TextInput
-                value={childBirthDate}
-                onChangeText={setChildBirthDate}
-                placeholder="ГГГГ-ММ-ДД"
-                placeholderTextColor="#a8a29e"
-                keyboardType="numbers-and-punctuation"
-                className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-base text-stone-900"
-              />
+              <Pressable
+                onPress={openDatePicker}
+                className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 active:opacity-80">
+                <Text
+                  className={`text-base ${displayDate ? 'text-stone-900' : 'text-stone-400'}`}>
+                  {displayDate ?? 'Выберите дату'}
+                </Text>
+              </Pressable>
+
+              {isDatePickerVisible ? (
+                <View className="mt-2 overflow-hidden rounded-2xl bg-stone-50">
+                  <DateTimePicker
+                    value={selectedDate}
+                    mode="date"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    maximumDate={new Date()}
+                    onChange={handleDateChange}
+                  />
+                  {Platform.OS === 'ios' ? (
+                    <Pressable
+                      onPress={closeDatePicker}
+                      className="items-center border-t border-stone-200 py-3 active:opacity-70">
+                      <Text className="text-sm font-semibold text-rose-500">Готово</Text>
+                    </Pressable>
+                  ) : null}
+                </View>
+              ) : null}
             </View>
 
             {error ? <Text className="text-sm text-red-600">{error}</Text> : null}
