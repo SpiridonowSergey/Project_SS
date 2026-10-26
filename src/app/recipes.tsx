@@ -1,4 +1,4 @@
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RecipeCard } from '@/features/recipes/components/RecipeCard';
@@ -16,11 +16,7 @@ export default function RecipesScreen() {
           data={MOCK_RECIPES}
           keyExtractor={(item) => item.id}
           contentContainerClassName="gap-3 px-4 pb-6"
-          renderItem={({ item }) => (
-            <Pressable onPress={() => {}} className="active:opacity-80">
-              <RecipeCard recipe={item} />
-            </Pressable>
-          )}
+          renderItem={({ item }) => <RecipeCard recipe={item} />}
         />
       </SafeAreaView>
     </View>
