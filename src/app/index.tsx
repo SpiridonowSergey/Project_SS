@@ -18,12 +18,14 @@ export default function HomeScreen() {
             </Pressable>
           </Link>
 
-          <Pressable className="rounded-2xl bg-white p-5 shadow-sm active:opacity-80">
-            <Text className="text-lg font-semibold text-stone-800">Гид по прикорму</Text>
-            <Text className="mt-1 text-sm text-stone-500">
-              Этапы введения продуктов с рождения
-            </Text>
-          </Pressable>
+          <Link href="/feeding-guide" asChild>
+            <Pressable className="rounded-2xl bg-white p-5 shadow-sm active:opacity-80">
+              <Text className="text-lg font-semibold text-stone-800">Гид по прикорму</Text>
+              <Text className="mt-1 text-sm text-stone-500">
+                Этапы введения продуктов с рождения
+              </Text>
+            </Pressable>
+          </Link>
         </View>
       </SafeAreaView>
     </View>
