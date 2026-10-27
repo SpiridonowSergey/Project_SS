@@ -1,13 +1,21 @@
-import { MOCK_FEEDING_STAGES } from '@/features/feeding-guide/mockData';
+import { useQuery } from '@tanstack/react-query';
+
+import { fetchFeedingStages } from '@/features/feeding-guide/api/fetchFeedingStages';
 import { getFeedingStageId } from '@/features/feeding-guide/stageId';
 import { useFeedingGuideStore } from '@/features/feeding-guide/store';
 
 export function useFeedingGuide() {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['feeding-stages'],
+    queryFn: fetchFeedingStages,
+  });
+
   const introducedStageIds = useFeedingGuideStore((state) => state.introducedStageIds);
   const toggleIntroduced = useFeedingGuideStore((state) => state.toggleIntroduced);
 
-  const totalCount = MOCK_FEEDING_STAGES.length;
-  const introducedCount = MOCK_FEEDING_STAGES.filter((stage) =>
+  const stages = data ?? [];
+  const totalCount = stages.length;
+  const introducedCount = stages.filter((stage) =>
     introducedStageIds.includes(getFeedingStageId(stage)),
   ).length;
 
@@ -16,7 +24,10 @@ export function useFeedingGuide() {
   }
 
   return {
-    stages: MOCK_FEEDING_STAGES,
+    data,
+    isLoading,
+    isError,
+    stages,
     introducedCount,
     totalCount,
     isStageIntroduced,
