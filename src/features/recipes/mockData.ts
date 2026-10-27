@@ -122,4 +122,22 @@ export const MOCK_RECIPES: Recipe[] = [
     safeServing: 'Разломать на кусочки по размеру детской ладошки, следить, чтобы ребенок не откусывал крупные куски.',
     isPremium: false,
   },
+  {
+    id: '6',
+    title: 'Печенье из банана и овсянки',
+    minAgeMonths: 8,
+    caloriesPer100g: 120,
+    mealType: 'snack',
+    ingredients: [
+      { productId: 'banana', amount: 100, unit: 'g' }, // 1 баночка
+      { productId: 'flour', amount: 30, unit: 'g' }, // 2-4 ст.л. муки
+      { productId: 'egg', amount: 50, unit: 'g' } // 1 шт
+    ],
+    steps: [
+      'Банан размять, смешать с овсянкой,', 
+      'Cлепить шарики, расплющить и запечь 10–12 мин при 180 °C.'
+    ],
+    allergenIds: ['egg', 'gluten'], // Яйцо и мука
+    isPremium: false,
+  },
 ];
