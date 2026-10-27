@@ -36,6 +36,8 @@ function RootNavigator() {
         <Stack.Screen name="recipes" />
         <Stack.Screen name="recipe/[id]" />
         <Stack.Screen name="feeding-guide" />
+        <Stack.Screen name="plates" />
+        <Stack.Screen name="plate/[id]" />
       </Stack.Protected>
 
       <Stack.Protected guard={!isOnboarded} redirectTo="/">
