@@ -79,4 +79,47 @@ export const MOCK_RECIPES: Recipe[] = [
     mealType: 'snack',
     safeServing: 'Нарежьте на мягкие полоски «пальчики». Не давайте целые крупные куски.',
   },
+
+  {
+    id: '4',
+    title: 'Творожная запеканка с яблоком и бананом',
+    minAgeMonths: 8, // Яйцо и манка — обычно с 8 мес.
+    caloriesPer100g: 150,
+    mealType: 'snack', // Перекус, как вы указали
+    ingredients: [
+      { productId: 'baby_cottage_cheese', amount: 50, unit: 'g' }, // 1 баночка ~50г
+      { productId: 'egg', amount: 50, unit: 'g' }, // 1 шт ~50г
+      { productId: 'semolina', amount: 20, unit: 'g' }, // 2 ст.л. ~20г
+      { productId: 'banana', amount: 50, unit: 'g' }, // 1/2 шт
+      { productId: 'apple', amount: 30, unit: 'g' } // 1/4 шт
+    ],
+    steps: [
+      'Смешать все ингредиенты в миске.',
+      'Выложить в форму для запекания.',
+      'Запекать в духовке при 180 °C в течение 20–30 минут.'
+    ],
+    allergenIds: ['cow_milk', 'egg', 'gluten'], // Творог, яйцо и манка — аллергены
+    safeServing: 'Нарезать на небольшие мягкие кусочки, проверить температуру перед подачей.',
+    isPremium: false,
+  },
+  {
+    id: '5',
+    title: 'Вафли из овощного пюре',
+    minAgeMonths: 8,
+    caloriesPer100g: 120,
+    mealType: 'snack',
+    ingredients: [
+      { productId: 'vegetable_puree', amount: 100, unit: 'g' }, // 1 баночка
+      { productId: 'flour', amount: 30, unit: 'g' }, // 2-4 ст.л. муки
+      { productId: 'egg', amount: 50, unit: 'g' } // 1 шт
+    ],
+    steps: [
+      'Смешать овощное пюре, муку и яйцо до однородной массы.',
+      'Разогреть вафельницу.',
+      'Выпекать до золотистого цвета.'
+    ],
+    allergenIds: ['egg', 'gluten'], // Яйцо и мука
+    safeServing: 'Разломать на кусочки по размеру детской ладошки, следить, чтобы ребенок не откусывал крупные куски.',
+    isPremium: false,
+  },
 ];
