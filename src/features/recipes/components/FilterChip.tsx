@@ -3,7 +3,7 @@ import { Pressable, Text } from 'react-native';
 type FilterChipProps = {
   label: string;
   selected: boolean;
-  variant?: 'allergen' | 'ingredient';
+  variant?: 'allergen' | 'ingredient' | 'meal';
   onPress: () => void;
 };
 
@@ -16,7 +16,9 @@ export function FilterChip({
   const selectedClassName =
     variant === 'allergen'
       ? 'border-red-500 bg-red-500'
-      : 'border-rose-500 bg-rose-500';
+      : variant === 'meal'
+        ? 'border-rose-500 bg-rose-500'
+        : 'border-rose-400 bg-rose-400';
   const selectedTextClassName = 'text-white';
   const idleClassName = 'border-stone-200 bg-white';
   const idleTextClassName = 'text-stone-700';

@@ -1,12 +1,17 @@
 import { router, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AllergenModal } from '@/features/allergens/components/AllergenModal';
+import { getAllergensByIds } from '@/features/allergens/mockData';
 import { MOCK_RECIPES } from '@/features/recipes/mockData';
+import type { Allergen } from '@/types/domain';
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const recipe = MOCK_RECIPES.find((item) => item.id === id);
+  const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null);
 
   if (!recipe) {
     return (
@@ -23,7 +28,8 @@ export default function RecipeDetailScreen() {
     );
   }
 
-  const hasAllergens = recipe.allergenIds.length > 0;
+  const allergens = getAllergensByIds(recipe.allergenIds);
+  const hasAllergens = allergens.length > 0;
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -48,10 +54,21 @@ export default function RecipeDetailScreen() {
           </View>
 
           {hasAllergens ? (
-            <View className="rounded-2xl bg-red-50 p-4">
-              <Text className="text-sm font-semibold text-red-700">
-                Содержит аллергены. Возможные замены: {recipe.allergenIds.join(', ')}
+            <View className="gap-3 rounded-2xl bg-red-50 p-4">
+              <Text className="text-sm font-semibold text-red-700">Содержит аллергены</Text>
+              <Text className="text-sm text-red-600">
+                Нажмите на аллерген, чтобы увидеть возможные замены.
               </Text>
+              <View className="flex-row flex-wrap gap-2">
+                {allergens.map((allergen) => (
+                  <Pressable
+                    key={allergen.id}
+                    onPress={() => setSelectedAllergen(allergen)}
+                    className="rounded-full bg-red-100 px-3 py-2 active:opacity-80">
+                    <Text className="text-sm font-medium text-red-700">{allergen.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
             </View>
           ) : null}
 
@@ -68,11 +85,22 @@ export default function RecipeDetailScreen() {
             </View>
           </View>
 
+          {recipe.safeServing ? (
+            <View className="gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+              <Text className="text-base font-semibold text-amber-800">
+                🛡️ Безопасная подача
+              </Text>
+              <Text className="text-sm leading-5 text-amber-900">{recipe.safeServing}</Text>
+            </View>
+          ) : null}
+
           <View className="gap-3">
             <Text className="text-xl font-semibold text-stone-900">Приготовление</Text>
             <View className="rounded-2xl bg-white p-4 shadow-sm">
               {recipe.steps.map((step, index) => (
-                <Text key={`${recipe.id}-step-${index}`} className="mb-3 text-base text-stone-700 last:mb-0">
+                <Text
+                  key={`${recipe.id}-step-${index}`}
+                  className="mb-3 text-base text-stone-700 last:mb-0">
                   {index + 1}. {step}
                 </Text>
               ))}
@@ -80,6 +108,10 @@ export default function RecipeDetailScreen() {
           </View>
         </ScrollView>
       </SafeAreaView>
+
+      {selectedAllergen ? (
+        <AllergenModal allergen={selectedAllergen} onClose={() => setSelectedAllergen(null)} />
+      ) : null}
     </View>
   );
 }

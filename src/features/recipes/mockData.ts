@@ -13,6 +13,8 @@ export const MOCK_RECIPES: Recipe[] = [
     steps: ['Промыть кабачок', 'Отварить до мягкости', 'Пробить блендером'],
     allergenIds: [],
     isPremium: false,
+    mealType: 'lunch',
+    safeServing: 'Подавайте гладким пюре без комочков. Начинайте с 1–2 чайных ложек.',
   },
   {
     id: 'recipe-broccoli-puree',
@@ -26,6 +28,8 @@ export const MOCK_RECIPES: Recipe[] = [
     steps: ['Разобрать на соцветия', 'Приготовить на пару', 'Измельчить'],
     allergenIds: [],
     isPremium: false,
+    mealType: 'dinner',
+    safeServing: 'Убедитесь, что пюре однородное. Не добавляйте соль.',
   },
   {
     id: 'recipe-apple-oat',
@@ -40,6 +44,8 @@ export const MOCK_RECIPES: Recipe[] = [
     steps: ['Залить овсянку молоком', 'Добавить яблоко', 'Варить до готовности'],
     allergenIds: ['milk', 'gluten'],
     isPremium: false,
+    mealType: 'breakfast',
+    safeServing: 'Остудите до тёплого. Консистенция должна легко стекать с ложки.',
   },
   {
     id: 'recipe-salmon-veg',
@@ -54,6 +60,8 @@ export const MOCK_RECIPES: Recipe[] = [
     steps: ['Отварить овощи', 'Приготовить лосось на пару', 'Смешать и размять'],
     allergenIds: ['fish'],
     isPremium: true,
+    mealType: 'lunch',
+    safeServing: 'Тщательно проверьте отсутствие костей. Разминайте вилкой до мягких кусочков.',
   },
   {
     id: 'recipe-banana-pancake',
@@ -68,5 +76,7 @@ export const MOCK_RECIPES: Recipe[] = [
     steps: ['Размять банан', 'Смешать с яйцом и мукой', 'Жарить на антипригарной сковороде'],
     allergenIds: ['egg', 'gluten'],
     isPremium: true,
+    mealType: 'snack',
+    safeServing: 'Нарежьте на мягкие полоски «пальчики». Не давайте целые крупные куски.',
   },
 ];

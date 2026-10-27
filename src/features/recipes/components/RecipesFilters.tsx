@@ -4,23 +4,46 @@ import { FilterChip } from '@/features/recipes/components/FilterChip';
 import {
   ALLERGEN_FILTERS,
   INGREDIENT_FILTERS,
+  MEAL_TYPE_FILTERS,
+  type MealTypeFilter,
 } from '@/features/recipes/constants/filters';
 
 type RecipesFiltersProps = {
+  mealType: MealTypeFilter;
   excludedAllergenIds: string[];
   selectedIngredientIds: string[];
+  onSelectMealType: (mealType: MealTypeFilter) => void;
   onToggleAllergen: (id: string) => void;
   onToggleIngredient: (id: string) => void;
 };
 
 export function RecipesFilters({
+  mealType,
   excludedAllergenIds,
   selectedIngredientIds,
+  onSelectMealType,
   onToggleAllergen,
   onToggleIngredient,
 }: RecipesFiltersProps) {
   return (
     <View className="gap-3">
+      <View className="gap-2">
+        <Text className="text-sm font-medium text-stone-500">Приём пищи</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-grow-0">
+          <View className="flex-row gap-2 pr-4">
+            {MEAL_TYPE_FILTERS.map((filter) => (
+              <FilterChip
+                key={filter.id}
+                label={filter.label}
+                variant="meal"
+                selected={mealType === filter.id}
+                onPress={() => onSelectMealType(filter.id)}
+              />
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+
       <View className="gap-2">
         <Text className="text-sm font-medium text-stone-500">Исключить аллергены</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-grow-0">

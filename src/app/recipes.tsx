@@ -7,10 +7,12 @@ import { useRecipesFilters } from '@/features/recipes/hooks/useRecipesFilters';
 
 export default function RecipesScreen() {
   const {
+    mealType,
     excludedAllergenIds,
     selectedIngredientIds,
     filteredRecipes,
     hasActiveFilters,
+    selectMealType,
     toggleAllergen,
     toggleIngredient,
     resetFilters,
@@ -30,8 +32,10 @@ export default function RecipesScreen() {
           </View>
 
           <RecipesFilters
+            mealType={mealType}
             excludedAllergenIds={excludedAllergenIds}
             selectedIngredientIds={selectedIngredientIds}
+            onSelectMealType={selectMealType}
             onToggleAllergen={toggleAllergen}
             onToggleIngredient={toggleIngredient}
           />

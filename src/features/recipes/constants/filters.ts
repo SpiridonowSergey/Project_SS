@@ -1,3 +1,5 @@
+import type { MealType } from '@/types/domain';
+
 export const ALLERGEN_FILTERS = [
   { id: 'milk', label: 'Молоко' },
   { id: 'gluten', label: 'Глютен' },
@@ -13,3 +15,14 @@ export const INGREDIENT_FILTERS = [
   { id: 'banana', label: 'Банан' },
   { id: 'carrot', label: 'Морковь' },
 ] as const;
+
+export type MealTypeFilter = 'all' | MealType;
+
+export const MEAL_TYPE_FILTERS: { id: MealTypeFilter; label: string }[] = [
+  { id: 'all', label: 'Все' },
+  { id: 'breakfast', label: 'Завтрак' },
+  { id: 'lunch', label: 'Обед' },
+  { id: 'dinner', label: 'Ужин' },
+  { id: 'snack', label: 'Перекус' },
+];
+

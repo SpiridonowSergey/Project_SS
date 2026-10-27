@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 
+import type { MealTypeFilter } from '@/features/recipes/constants/filters';
 import { MOCK_RECIPES } from '@/features/recipes/mockData';
 import type { Recipe } from '@/types/domain';
 
@@ -8,14 +9,21 @@ function toggleId(ids: string[], id: string) {
 }
 
 export function useRecipesFilters(recipes: Recipe[] = MOCK_RECIPES) {
+  const [mealType, setMealType] = useState<MealTypeFilter>('all');
   const [excludedAllergenIds, setExcludedAllergenIds] = useState<string[]>([]);
   const [selectedIngredientIds, setSelectedIngredientIds] = useState<string[]>([]);
 
   const hasActiveFilters =
-    excludedAllergenIds.length > 0 || selectedIngredientIds.length > 0;
+    mealType !== 'all' ||
+    excludedAllergenIds.length > 0 ||
+    selectedIngredientIds.length > 0;
 
   const filteredRecipes = useMemo(() => {
     return recipes.filter((recipe) => {
+      if (mealType !== 'all' && recipe.mealType !== mealType) {
+        return false;
+      }
+
       const hasExcludedAllergen = excludedAllergenIds.some((allergenId) =>
         recipe.allergenIds.includes(allergenId),
       );
@@ -33,7 +41,11 @@ export function useRecipesFilters(recipes: Recipe[] = MOCK_RECIPES) {
         recipeProductIds.includes(ingredientId),
       );
     });
-  }, [excludedAllergenIds, recipes, selectedIngredientIds]);
+  }, [excludedAllergenIds, mealType, recipes, selectedIngredientIds]);
+
+  function selectMealType(nextMealType: MealTypeFilter) {
+    setMealType(nextMealType);
+  }
 
   function toggleAllergen(id: string) {
     setExcludedAllergenIds((current) => toggleId(current, id));
@@ -44,15 +56,18 @@ export function useRecipesFilters(recipes: Recipe[] = MOCK_RECIPES) {
   }
 
   function resetFilters() {
+    setMealType('all');
     setExcludedAllergenIds([]);
     setSelectedIngredientIds([]);
   }
 
   return {
+    mealType,
     excludedAllergenIds,
     selectedIngredientIds,
     filteredRecipes,
     hasActiveFilters,
+    selectMealType,
     toggleAllergen,
     toggleIngredient,
     resetFilters,
