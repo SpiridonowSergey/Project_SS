@@ -37,6 +37,7 @@ export type Recipe = {
   isPremium: boolean;
   mealType: MealType;
   safeServing?: string;
+  imageUrl?: string;
 };
 
 export type FeedingStage = {
