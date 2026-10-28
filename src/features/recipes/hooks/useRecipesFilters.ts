@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import type { MealTypeFilter } from '@/features/recipes/constants/filters';
 import { MOCK_RECIPES } from '@/features/recipes/mockData';
 import { useFavoritesStore } from '@/features/recipes/store/favorites';
-import type { Recipe } from '@/types/domain';
+import type { MealType, Recipe } from '@/types/domain';
 
 function toggleId(ids: string[], id: string) {
   return ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id];
@@ -11,13 +11,13 @@ function toggleId(ids: string[], id: string) {
 
 export function useRecipesFilters(recipes: Recipe[] = MOCK_RECIPES) {
   const favoriteIds = useFavoritesStore((state) => state.favoriteIds);
-  const [mealType, setMealType] = useState<MealTypeFilter>('all');
+  const [mealType, setMealType] = useState<MealTypeFilter>(null);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [excludedAllergenIds, setExcludedAllergenIds] = useState<string[]>([]);
   const [selectedIngredientIds, setSelectedIngredientIds] = useState<string[]>([]);
 
   const hasActiveFilters =
-    mealType !== 'all' ||
+    mealType !== null ||
     favoritesOnly ||
     excludedAllergenIds.length > 0 ||
     selectedIngredientIds.length > 0;
@@ -28,7 +28,7 @@ export function useRecipesFilters(recipes: Recipe[] = MOCK_RECIPES) {
         return false;
       }
 
-      if (mealType !== 'all' && recipe.mealType !== mealType) {
+      if (mealType !== null && recipe.mealType !== mealType) {
         return false;
       }
 
@@ -58,8 +58,12 @@ export function useRecipesFilters(recipes: Recipe[] = MOCK_RECIPES) {
     selectedIngredientIds,
   ]);
 
-  function selectMealType(nextMealType: MealTypeFilter) {
-    setMealType(nextMealType);
+  function selectMealType(nextMealType: MealType) {
+    setMealType((current) => (current === nextMealType ? null : nextMealType));
+  }
+
+  function clearMealType() {
+    setMealType(null);
   }
 
   function toggleFavoritesOnly() {
@@ -75,7 +79,7 @@ export function useRecipesFilters(recipes: Recipe[] = MOCK_RECIPES) {
   }
 
   function resetFilters() {
-    setMealType('all');
+    setMealType(null);
     setFavoritesOnly(false);
     setExcludedAllergenIds([]);
     setSelectedIngredientIds([]);
@@ -89,6 +93,7 @@ export function useRecipesFilters(recipes: Recipe[] = MOCK_RECIPES) {
     filteredRecipes,
     hasActiveFilters,
     selectMealType,
+    clearMealType,
     toggleFavoritesOnly,
     toggleAllergen,
     toggleIngredient,

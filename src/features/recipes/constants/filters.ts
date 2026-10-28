@@ -16,13 +16,12 @@ export const INGREDIENT_FILTERS = [
   { id: 'carrot', label: 'Морковь' },
 ] as const;
 
-export type MealTypeFilter = 'all' | MealType;
+/** Selected meal filter, or `null` when showing all meals. */
+export type MealTypeFilter = MealType | null;
 
-export const MEAL_TYPE_FILTERS: { id: MealTypeFilter; label: string }[] = [
-  { id: 'all', label: 'Все' },
+export const MEAL_TYPE_FILTERS: { id: MealType; label: string }[] = [
   { id: 'breakfast', label: 'Завтрак' },
   { id: 'lunch', label: 'Обед' },
   { id: 'dinner', label: 'Ужин' },
   { id: 'snack', label: 'Перекус' },
 ];
-
