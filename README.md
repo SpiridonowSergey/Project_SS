@@ -1,139 +1,162 @@
 # Project SS
 
-Мобильное приложение для молодых мам: рецепты детского питания с рождения, калорийность, логика аллергенов и гид по введению прикорма.
+Мобильное приложение для молодых мам: рецепты детского питания, аллергены с заменами, гид по прикорму, конструктор сбалансированной тарелки и персональный онбординг.
 
-Целевые платформы: **iOS** и **Android** (Expo). Есть и web-сборка для разработки.
+Платформы: **iOS** и **Android** (Expo). Web используется для разработки.
 
 ## Идея
 
-Помочь родителям уверенно кормить ребёнка на каждом этапе — от первых месяцев до расширения рациона.
+Помочь родителям уверенно кормить ребёнка — от первых месяцев до расширения рациона.
 
-- **Рецепты** — блюда по возрасту, калории, ингредиенты и шаги; часть контента может быть premium.
-- **Аллергены** — предупреждения с возможностью исключать продукты из каталога; в перспективе — всегда с безопасными заменителями.
-- **Гид по прикорму** — этапы введения продуктов с объёмами и ссылкой на медицинский источник.
-- **Доверие** — каждая рекомендация по прикорму привязана к `MedicalSource` через `sourceId`.
+- **Рецепты** — по возрасту и приёму пищи, калории, ингредиенты, шаги, безопасная подача; часть контента premium.
+- **Аллергены** — фильтры исключения в каталоге и bottom sheet с заменами на экране рецепта.
+- **Гид по прикорму** — этапы введения с объёмами и ссылкой на медицинский источник (`sourceId` → `MedicalSource`).
+- **Тарелки** — шаблоны сбалансированного рациона с заменой продуктов внутри категории.
+- **Профиль** — имя мамы, дата рождения ребёнка, персональное приветствие и возраст малыша на Home.
 
-## Текущая версия (v0.2 — прототип с моками)
+## Текущая версия (v0.3 — Supabase + клиентские фичи)
 
-Демо Expo удалено. Работают Home, каталог рецептов с фильтрами, карточка рецепта и гид по прикорму с сохранением прогресса. Данные пока локальные (mock).
+Рецепты и этапы прикорма читаются из **Supabase**. Локально остаются моки аллергенов, источников гида и шаблонов тарелок; пользовательские данные (онбординг, избранное, прогресс гида, замены в тарелке) — в Zustand + AsyncStorage.
 
 | Модуль | Статус |
 | --- | --- |
-| Home + навигация на фичи | готово |
-| Каталог рецептов + фильтры | готово (моки) |
-| Экран рецепта `/recipe/[id]` | готово (моки) |
-| Гид по прикорму + прогресс | готово (моки + persist) |
-| Замены аллергенов | заглушка (выводятся id) |
-| i18n, entitlements / premium-gate | ещё нет |
-| Backend / Supabase | клиент в зависимостях, не подключён |
+| Онбординг + защита роутов | готово (persist) |
+| Home с именем и возрастом ребёнка | готово |
+| Каталог рецептов + фильтры + избранное | готово (данные из Supabase) |
+| Экран рецепта `/recipe/[id]` | готово (Supabase + `useRecipe`) |
+| Аллергены: чипы + bottom sheet с заменами | готово (локальные `MOCK_ALLERGENS`) |
+| Гид по прикорму + прогресс «Введено» | готово (этапы из Supabase, прогресс persist) |
+| Конструктор тарелок | готово (моки шаблонов) |
+| i18n | ещё нет |
+| Entitlements / premium-gate | ещё нет (`isPremium` есть в данных) |
+| Auth Supabase | ещё нет (только anon-клиент для чтения) |
 
 ## Экраны и сценарии
 
+### Онбординг (`/onboarding`)
+
+- Имя мамы + дата рождения ребёнка (нативный DateTimePicker)
+- Сохранение в `useUserStore` (persist)
+- Без онбординга `Stack.Protected` не пускает в основные экраны
+
 ### Home (`/`)
 
-Приветствие «Привет, мама!» и две карточки-ссылки:
-
-- **Рецепты** → `/recipes`
-- **Гид по прикорму** → `/feeding-guide`
+- «Привет, {имя}!» и возраст малыша
+- Ссылки: Рецепты, Гид по прикорму, Тарелки
 
 ### Рецепты (`/recipes`)
 
-- Список карточек из `MOCK_RECIPES`
-- Фильтры по аллергенам (**исключение**): молоко, глютен, яйцо, рыба
-- Фильтры по ингредиентам (**логика И**): кабачок, брокколи, яблоко и др.
-- Кнопка «Сбросить фильтры»
-- Тап по карточке → детальный экран
+- Список из таблицы Supabase `recipes` через `useRecipes` (TanStack Query)
+- Фильтры: приём пищи, избранное, исключение аллергенов, ингредиенты (логика **И**)
+- Сердечко на карточке → `useFavoritesStore` (persist)
+- Тап по карточке → `/recipe/[id]`
 
 ### Рецепт (`/recipe/[id]`)
 
-- Название, возраст, калорийность, premium-метка
-- Блок аллергенов (пока список id)
-- Ингредиенты и нумерованные шаги приготовления
-- Кнопка «Назад»
+- Загрузка одного рецепта: `useRecipe(id)` → `recipes.select('*').eq('id', id).single()`
+- Метаданные, аллергены с заменами (modal), ингредиенты, safeServing, шаги
+- Состояния: загрузка / не найден / контент
 
 ### Гид по прикорму (`/feeding-guide`)
 
-- Этапы: возраст, группа продуктов, старт/цель по объёму, notes
-- Источник из `SOURCES` по `sourceId`
-- Переключатель **«Введено»** на каждой карточке
-- Полоса прогресса: «Введено X из Y продуктов»
-- Состояние сохраняется между запусками (Zustand + AsyncStorage)
-- Дисклеймер: информация справочная, не заменяет педиатра
+- Этапы из таблицы `feeding_stages` через `useFeedingGuide`
+- Switch «Введено», прогресс-бар, persist прогресса
+- Источники пока из локального `SOURCES` по `sourceId`
+- Дисклеймер: не заменяет консультацию педиатра
+
+### Тарелки (`/plates`, `/plate/[id]`)
+
+- Шаблоны из `PLATE_TEMPLATES`
+- Слоты: овощи / белок / углеводы
+- Замена продукта только внутри категории (`SUBSTITUTES`), баланс сохраняется
+
+## Данные и API
+
+### Supabase
+
+Клиент: `src/shared/lib/supabase.ts`  
+Переменные в `.env` (файл в `.gitignore`):
+
+```
+EXPO_PUBLIC_SUPABASE_URL=...
+EXPO_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+| Таблица | Хук | Маппинг |
+| --- | --- | --- |
+| `recipes` | `useRecipes`, `useRecipe` | snake_case → `Recipe` (`mapRecipe`) |
+| `feeding_stages` | `useFeedingGuide` | snake_case → `FeedingStage` (`mapFeedingStage`) |
+
+После смены `.env` перезапустите Metro с очисткой кэша: `npx expo start -c`.
+
+### Локальный persist (Zustand + AsyncStorage)
+
+- `user-profile` — онбординг
+- `recipe-favorites` — избранное
+- `feeding-guide-progress` — отмеченные этапы
+- overrides тарелок — в памяти (Zustand без persist)
 
 ## Стек
 
 - Expo SDK 58, React Native, TypeScript (strict)
-- Expo Router (file-based routing в `src/app/`)
+- Expo Router (`src/app/`, file-based routing)
 - NativeWind 4 + Tailwind CSS
-- TanStack Query (провайдер на корне)
+- TanStack Query
 - Zustand + persist + AsyncStorage
+- Supabase JS
+- `@gorhom/bottom-sheet`, DateTimePicker, `@expo/vector-icons`
 - React Hook Form + Zod (в зависимостях)
-- Supabase JS (в зависимостях, пока не используется)
 
 ## Структура
 
 ```
 src/
-  app/                          # маршруты Expo Router (тонкие экраны)
-    _layout.tsx                 # QueryClientProvider + Stack
-    index.tsx                   # Home
-    recipes.tsx                 # каталог
-    recipe/[id].tsx             # детали рецепта
-    feeding-guide.tsx           # гид по прикорму
+  app/
+    _layout.tsx              # QueryClient, GestureHandler, Stack.Protected
+    index.tsx                # Home
+    (auth)/onboarding.tsx
+    recipes.tsx
+    recipe/[id].tsx
+    feeding-guide.tsx
+    plates.tsx
+    plate/[id].tsx
   features/
-    recipes/
-      components/               # RecipeCard, фильтры, чипсы
-      constants/filters.ts
-      hooks/useRecipesFilters.ts
-      mockData.ts
-    feeding-guide/
-      components/               # FeedingStageCard, прогресс
-      hooks/useFeedingGuide.ts
-      store.ts                  # Zustand persist
-      stageId.ts
-      mockData.ts               # этапы + MedicalSource
-  types/domain.ts               # Recipe, Allergen, FeedingStage…
+    recipes/                 # api, hooks, filters, favorites, UI
+    feeding-guide/           # api, progress store, UI
+    allergens/               # modal + mock allergens
+    plates/                  # templates, substitutes, UI
+    user/                    # onboarding store, age utils
+  shared/lib/supabase.ts
+  types/domain.ts
   global.css
 ```
 
-Правила архитектуры и домена: `.agents/skills/AGENTS.md`.
-
-Кратко:
-
-- экраны в `app/` тонкие, логика и UI — в `features/`
-- у экрана есть хук в папке фичи
-- фичи не импортируют друг друга
-- рекомендации прикорма всегда с `sourceId`
-- предупреждения об аллергенах в итоге должны показывать substitutes
+Правила: `.agents/skills/AGENTS.md` — тонкие экраны, хуки в фичах, фичи не импортируют друг друга, рекомендации прикорма с `sourceId`, аллергены всегда с substitutes.
 
 ## Доменные типы
 
-Основные сущности в `src/types/domain.ts`:
+В `src/types/domain.ts`:
 
-- `MedicalSource` — медицинский источник
-- `Allergen` + `Substitute` — аллерген и замены
-- `Recipe` — рецепт (возраст, ккал, ингредиенты, шаги, allergenIds, isPremium)
-- `FeedingStage` — этап прикорма (объёмы, notes, sourceId)
+- `MedicalSource`, `Allergen`, `Substitute`
+- `Recipe` (+ `mealType`, `safeServing`, `isPremium`)
+- `FeedingStage` (`sourceId` обязателен)
+- `MealType`: `breakfast` | `lunch` | `dinner` | `snack`
 
 ## Запуск
 
 ```bash
 npm install
+# положите .env с EXPO_PUBLIC_SUPABASE_URL и EXPO_PUBLIC_SUPABASE_ANON_KEY
 npx expo start
 ```
 
-Опции: Expo Go, Android-эмулятор, iOS-симулятор, web. Для туннеля: `npx expo start --tunnel`.
+Туннель: `npx expo start --tunnel`  
+Типы: `npx tsc --noEmit`
 
-Проверка типов:
+## Что дальше
 
-```bash
-npx tsc --noEmit
-```
-
-## Что дальше (ориентиры)
-
-- Реальные данные вместо моков (Supabase)
-- Полноценные замены аллергенов в UI
-- i18n для всех строк
-- Entitlements / разблокировка premium-рецептов
-- Расширение гида и рецептов под возрастные группы
+- Auth и пользовательские данные в Supabase
+- Источники гида и аллергены из БД
+- i18n
+- `useEntitlement` для premium
+- Persist / синхронизация кастомных тарелок
