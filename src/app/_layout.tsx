@@ -51,31 +51,28 @@ function RootNavigator() {
         <Stack.Screen
           name="recipes"
           options={{
-            headerShown: true,
-            title: 'Рецепты',
-            headerBackTitle: 'Рецепты',
-            headerBackButtonDisplayMode: 'minimal',
+            headerShown: false, // <--- УБИРАЕМ НАТИВНЫЙ ХЕДЕР
           }}
         />
         <Stack.Screen
           name="recipe/[id]"
           options={{
-            headerShown: true,
-            title: 'Рецепт',
-          }}
-        />
-        <Stack.Screen name="feeding-guide" />
-        <Stack.Screen name="plates" />
-        <Stack.Screen name="plate/[id]" />
-        <Stack.Screen
-          name="profile"
-          options={{
-            headerShown: true,
-            title: 'Профиль',
+            headerShown: true, // <--- ЗДЕСЬ ОСТАВЛЯЕМ (для кнопки назад)
+            title: 'Рецепт', 
+            headerBackTitle: ' ',
             headerBackButtonDisplayMode: 'minimal',
           }}
         />
-        <Stack.Screen name="admin" />
+        <Stack.Screen name="feeding-guide" options={{ headerShown: false }} />
+        <Stack.Screen name="plates" options={{ headerShown: false }} />
+        <Stack.Screen name="plate/[id]" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="profile"
+          options={{
+            headerShown: false, // <--- УБИРАЕМ НАТИВНЫЙ ХЕДЕР
+          }}
+        />
+        <Stack.Screen name="admin" options={{ headerShown: false }} />
       </Stack.Protected>
 
       <Stack.Protected guard={!isOnboarded} redirectTo="/">
