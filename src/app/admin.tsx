@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AddFeedingStageForm } from '@/features/admin/components/AddFeedingStageForm';
 import { AddRecipeForm } from '@/features/admin/components/AddRecipeForm';
 import { ManageFeedingStagesList } from '@/features/admin/components/ManageFeedingStagesList';
 import { ManageRecipesList } from '@/features/admin/components/ManageRecipesList';
@@ -11,6 +12,7 @@ import {
   useDeleteFeedingStage,
 } from '@/features/feeding-guide/hooks/useDeleteFeedingStage';
 import { useFeedingGuide } from '@/features/feeding-guide/hooks/useFeedingGuide';
+import { SOURCES } from '@/features/feeding-guide/mockData';
 import {
   confirmDeleteRecipe,
   useDeleteRecipe,
@@ -18,16 +20,22 @@ import {
 import { useRecipes } from '@/features/recipes/hooks/useRecipes';
 import type { FeedingStage, Recipe } from '@/types/domain';
 
-type AdminTab = 'add-recipe' | 'manage-recipes' | 'manage-guide';
+type AdminTab =
+  | 'add-recipe'
+  | 'add-feeding-stage'
+  | 'manage-recipes'
+  | 'manage-guide';
 
 const TABS: { id: AdminTab; label: string }[] = [
   { id: 'add-recipe', label: 'Добавить рецепт' },
+  { id: 'add-feeding-stage', label: 'Добавить этап прикорма' },
   { id: 'manage-recipes', label: 'Управление рецептами' },
   { id: 'manage-guide', label: 'Управление гидом' },
 ];
 
 export default function AdminScreen() {
   const [tab, setTab] = useState<AdminTab>('add-recipe');
+  const sources = Object.values(SOURCES);
 
   const recipesQuery = useRecipes();
   const feedingGuideQuery = useFeedingGuide();
@@ -81,6 +89,8 @@ export default function AdminScreen() {
         </View>
 
         {tab === 'add-recipe' ? <AddRecipeForm /> : null}
+
+        {tab === 'add-feeding-stage' ? <AddFeedingStageForm sources={sources} /> : null}
 
         {tab === 'manage-recipes' ? (
           <ManageRecipesList
