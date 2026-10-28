@@ -24,11 +24,11 @@ export function FilterChip({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={{ selected }}
-      className={`rounded-full border px-3 py-2 active:opacity-80 ${
+      className={`min-h-11 items-center justify-center rounded-full border px-3.5 active:opacity-80 ${
         selected ? selectedClassName : idleClassName
       }`}>
       <Text
-        className={`text-sm font-medium ${
+        className={`type-caption font-medium ${
           selected ? 'text-onTint' : 'text-label-secondary'
         }`}>
         {label}

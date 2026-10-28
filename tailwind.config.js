@@ -31,6 +31,13 @@ module.exports = {
         border: "var(--color-border)",
         onTint: "var(--color-on-tint)",
       },
+      // Semantic type ramp (Phase C). Prefer these over ad-hoc text-2xl / text-lg.
+      fontSize: {
+        title: ["22px", { lineHeight: "28px", fontWeight: "700" }],
+        headline: ["17px", { lineHeight: "22px", fontWeight: "600" }],
+        body: ["17px", { lineHeight: "22px", fontWeight: "400" }],
+        caption: ["13px", { lineHeight: "18px", fontWeight: "400" }],
+      },
     },
   },
   plugins: [],

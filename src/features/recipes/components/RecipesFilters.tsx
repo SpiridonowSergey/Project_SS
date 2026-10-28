@@ -26,9 +26,9 @@ export function RecipesFilters({
   onToggleIngredient,
 }: RecipesFiltersProps) {
   return (
-    <View className="gap-3">
-      <View className="gap-2">
-        <Text className="text-sm font-medium text-label-muted">Приём пищи</Text>
+    <View className="gap-4">
+      <View className="gap-1.5">
+        <Text className="type-caption text-label-muted">Приём пищи</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-grow-0">
           <View className="flex-row gap-2 pr-4">
             {MEAL_TYPE_FILTERS.map((filter) => (
@@ -44,8 +44,8 @@ export function RecipesFilters({
         </ScrollView>
       </View>
 
-      <View className="gap-2">
-        <Text className="text-sm font-medium text-label-muted">Исключить аллергены</Text>
+      <View className="gap-1.5">
+        <Text className="type-caption text-label-muted">Аллергены</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-grow-0">
           <View className="flex-row gap-2 pr-4">
             {ALLERGEN_FILTERS.map((allergen) => (
@@ -61,10 +61,8 @@ export function RecipesFilters({
         </ScrollView>
       </View>
 
-      <View className="gap-2">
-        <Text className="text-sm font-medium text-label-muted">
-          Ингредиенты (все выбранные)
-        </Text>
+      <View className="gap-1.5">
+        <Text className="type-caption text-label-muted">Ингредиенты</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-grow-0">
           <View className="flex-row gap-2 pr-4">
             {INGREDIENT_FILTERS.map((ingredient) => (

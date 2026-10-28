@@ -31,23 +31,21 @@ export default function RecipesScreen() {
         className="flex-1 bg-surface"
         data={listData}
         keyExtractor={(item) => item.id}
-        contentContainerClassName={
-          listData.length === 0 ? 'flex-grow px-4 pb-6' : 'gap-3 px-4 pb-6'
-        }
+        contentContainerClassName={listData.length === 0 ? 'flex-grow pb-6' : 'pb-6'}
         ListHeaderComponent={
           !isLoading && !isError ? (
-            <View className="gap-4 pb-4 pt-2">
+            <View className="border-b border-border/50 px-4 pb-4 pt-2">
               <Pressable
                 onPress={toggleFavoritesOnly}
                 accessibilityRole="button"
                 accessibilityState={{ selected: favoritesOnly }}
-                className={`self-start rounded-full border px-4 py-2 active:opacity-80 ${
+                className={`mb-4 min-h-11 self-start items-center justify-center rounded-full border px-4 active:opacity-80 ${
                   favoritesOnly
                     ? 'border-brand bg-brand'
                     : 'border-border bg-surface-elevated'
                 }`}>
                 <Text
-                  className={`text-sm font-medium ${
+                  className={`type-caption font-medium ${
                     favoritesOnly ? 'text-onTint' : 'text-label-secondary'
                   }`}>
                   Избранное
@@ -67,16 +65,16 @@ export default function RecipesScreen() {
         }
         ListEmptyComponent={
           isLoading ? (
-            <View className="flex-1 items-center justify-center gap-3 py-16">
+            <View className="flex-1 items-center justify-center gap-3 px-4 py-16">
               <ActivityIndicator size="large" color={colors.brand} />
-              <Text className="text-base text-label-secondary">Загрузка...</Text>
+              <Text className="type-body text-label-secondary">Загрузка...</Text>
             </View>
           ) : isError ? (
-            <View className="flex-1 items-center justify-center px-2 py-16">
-              <Text className="text-center text-base text-danger">Ошибка загрузки</Text>
+            <View className="flex-1 items-center justify-center px-4 py-16">
+              <Text className="text-center type-body text-danger">Ошибка загрузки</Text>
             </View>
           ) : (
-            <Text className="mt-8 text-center text-base text-label-secondary">
+            <Text className="mt-8 px-4 text-center type-body text-label-secondary">
               {favoritesOnly
                 ? 'В избранном пока нет рецептов'
                 : 'Нет рецептов по выбранным фильтрам'}
@@ -93,8 +91,12 @@ export default function RecipesScreen() {
           headerBackButtonDisplayMode: 'minimal',
           headerRight: hasActiveFilters
             ? () => (
-                <Pressable onPress={resetFilters} className="px-1 active:opacity-70">
-                  <Text className="text-sm font-medium text-brand">Сбросить</Text>
+                <Pressable
+                  onPress={resetFilters}
+                  accessibilityRole="button"
+                  accessibilityLabel="Сбросить фильтры"
+                  className="min-h-11 items-center justify-center px-1 active:opacity-70">
+                  <Text className="type-caption font-medium text-brand">Сбросить</Text>
                 </Pressable>
               )
             : undefined,

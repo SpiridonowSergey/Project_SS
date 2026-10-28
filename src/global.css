@@ -24,3 +24,19 @@
   --color-border: #e7e5e4;
   --color-on-tint: #ffffff;
 }
+
+/* Semantic type ramp — size + weight (colors via text-label* utilities). */
+@layer components {
+  .type-title {
+    @apply text-[22px] font-bold leading-7;
+  }
+  .type-headline {
+    @apply text-[17px] font-semibold leading-[22px];
+  }
+  .type-body {
+    @apply text-[17px] font-normal leading-[22px];
+  }
+  .type-caption {
+    @apply text-[13px] font-normal leading-[18px];
+  }
+}

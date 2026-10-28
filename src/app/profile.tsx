@@ -19,21 +19,29 @@ export default function ProfileScreen() {
 
   return (
     <View className="flex-1 bg-surface">
-      <View className="flex-1 px-4 pb-6 pt-2">
-        <View className="gap-3 rounded-2xl bg-surface-elevated p-5 shadow-sm">
-          <Text className="text-lg font-semibold text-label">{motherName}</Text>
+      <View className="flex-1 pt-2">
+        <View className="border-b border-border/50 bg-surface-elevated px-4 py-4">
+          <Text className="type-headline text-label">{motherName}</Text>
           {childAgeLabel ? (
-            <Text className="text-base text-label-secondary">{childAgeLabel}</Text>
+            <Text className="mt-1 type-body text-label-secondary">{childAgeLabel}</Text>
           ) : null}
           {childBirthDate ? (
-            <Text className="text-sm text-label-muted">Дата рождения: {childBirthDate}</Text>
+            <Text className="mt-1 type-caption text-label-muted">
+              Дата рождения: {childBirthDate}
+            </Text>
           ) : null}
         </View>
 
         <View className="flex-1" />
 
-        <Pressable onLongPress={openModal} delayLongPress={800} className="items-center py-2">
-          <Text className="text-xs text-label-muted">Версия приложения: {APP_VERSION}</Text>
+        <Pressable
+          onLongPress={openModal}
+          delayLongPress={800}
+          accessibilityRole="text"
+          className="items-center py-4">
+          <Text className="type-caption text-label-muted">
+            Версия приложения: {APP_VERSION}
+          </Text>
         </Pressable>
       </View>
 
