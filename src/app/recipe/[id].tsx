@@ -1,19 +1,32 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AllergenModal } from '@/features/allergens/components/AllergenModal';
 import { getAllergensByIds } from '@/features/allergens/mockData';
-import { MOCK_RECIPES } from '@/features/recipes/mockData';
+import { useRecipe } from '@/features/recipes/hooks/useRecipe';
 import type { Allergen } from '@/types/domain';
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const recipe = MOCK_RECIPES.find((item) => item.id === id);
+  const { data: recipe, isLoading, isError } = useRecipe(id);
   const [selectedAllergen, setSelectedAllergen] = useState<Allergen | null>(null);
 
-  if (!recipe) {
+  if (isLoading) {
+    return (
+      <View className="flex-1 bg-gray-50">
+        <SafeAreaView style={{ flex: 1 }}>
+          <View className="flex-1 items-center justify-center gap-3">
+            <ActivityIndicator size="large" color="#f43f5e" />
+            <Text className="text-base text-stone-500">Загрузка...</Text>
+          </View>
+        </SafeAreaView>
+      </View>
+    );
+  }
+
+  if (isError || !recipe) {
     return (
       <View className="flex-1 bg-gray-50">
         <SafeAreaView style={{ flex: 1 }}>
