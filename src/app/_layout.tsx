@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useStoreHydration } from '@/features/user/hooks/useStoreHydration';
 import { useUserStore } from '@/features/user/store';
+import { colors } from '@/theme';
 
 export default function RootLayout() {
   const [queryClient] = useState(() => new QueryClient());
@@ -26,19 +27,44 @@ function RootNavigator() {
   const isOnboarded = useUserStore((state) => state.isOnboarded);
 
   if (!hydrated) {
-    return <View className="flex-1 bg-rose-50" />;
+    return <View className="flex-1 bg-brand-soft" />;
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        headerTintColor: colors.brand,
+        headerTitleStyle: { color: colors.label },
+        headerShadowVisible: false,
+        contentStyle: { backgroundColor: colors.surface },
+      }}>
       <Stack.Protected guard={isOnboarded} redirectTo="/onboarding">
         <Stack.Screen name="index" />
-        <Stack.Screen name="recipes" />
-        <Stack.Screen name="recipe/[id]" />
+        <Stack.Screen
+          name="recipes"
+          options={{
+            headerShown: true,
+            title: 'Рецепты',
+          }}
+        />
+        <Stack.Screen
+          name="recipe/[id]"
+          options={{
+            headerShown: true,
+            title: 'Рецепт',
+          }}
+        />
         <Stack.Screen name="feeding-guide" />
         <Stack.Screen name="plates" />
         <Stack.Screen name="plate/[id]" />
-        <Stack.Screen name="profile" />
+        <Stack.Screen
+          name="profile"
+          options={{
+            headerShown: true,
+            title: 'Профиль',
+          }}
+        />
         <Stack.Screen name="admin" />
       </Stack.Protected>
 

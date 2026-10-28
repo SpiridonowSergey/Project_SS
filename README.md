@@ -14,9 +14,11 @@
 - **Тарелки** — шаблоны сбалансированного рациона с заменой продуктов внутри категории.
 - **Профиль** — имя мамы, дата рождения ребёнка, персональное приветствие и возраст малыша на Home.
 
-## Текущая версия (v0.3 — Supabase + клиентские фичи)
+## Текущая версия (v0.4 — токены + нативный chrome)
 
 Рецепты и этапы прикорма читаются из **Supabase**. Локально остаются моки аллергенов, источников гида и шаблонов тарелок; пользовательские данные (онбординг, избранное, прогресс гида, замены в тарелке) — в Zustand + AsyncStorage.
+
+Стартовали внедрение дизайн-системы по аудиту: **Phase 0** (цветовые токены NativeWind) и **Phase 1** (нативные заголовки Stack на ключевых экранах).
 
 | Модуль | Статус |
 | --- | --- |
@@ -27,9 +29,27 @@
 | Аллергены: чипы + bottom sheet с заменами | готово (локальные `MOCK_ALLERGENS`) |
 | Гид по прикорму + прогресс «Введено» | готово (этапы из Supabase, прогресс persist) |
 | Конструктор тарелок | готово (моки шаблонов) |
+| Дизайн: CSS-токены + Tailwind colors | готово (Phase 0, light-only) |
+| Дизайн: нативный header recipes / recipe / profile | готово (Phase 1) |
 | i18n | ещё нет |
 | Entitlements / premium-gate | ещё нет (`isPremium` есть в данных) |
 | Auth Supabase | ещё нет (только anon-клиент для чтения) |
+
+## Дизайн-система (в работе)
+
+### Phase 0 — токены (готово)
+
+- Цвета бренда, фона, текста и danger задаются в `src/global.css` как CSS-переменные (`--color-brand`, `--color-danger`, …).
+- Тема **только light**: `color-scheme: light` в CSS, `userInterfaceStyle: "light"` в `app.json`, `darkMode: "class"` в Tailwind (без dark UI).
+- `tailwind.config.js` → `theme.extend.colors` привязан к `var(--color-*)` (`brand`, `danger`, `surface`, `label`, `border`).
+- Для props без className (`ActivityIndicator`, Ionicons и т.п.) — зеркало токенов в `src/theme/colors.ts`.
+- В UI экранов recipes / profile / recipe detail hex в разметке не хардкодим: только Tailwind-классы или `colors.*`.
+
+### Phase 1 — навигационный chrome (готово)
+
+- В `src/app/_layout.tsx` для `recipes`, `recipe/[id]`, `profile` включён стандартный Stack header (title + системная «Назад»).
+- Кастомные самодельные хедеры с `headerShown: false` на этих экранах убраны.
+- На `/recipes` кнопка «Сбросить» вынесена в `headerRight` (показывается только при активных фильтрах).
 
 ## Экраны и сценарии
 
@@ -46,6 +66,7 @@
 
 ### Рецепты (`/recipes`)
 
+- Нативный header: title «Рецепты», «Сбросить» в `headerRight` при активных фильтрах
 - Список из таблицы Supabase `recipes` через `useRecipes` (TanStack Query)
 - Фильтры: приём пищи, избранное, исключение аллергенов, ингредиенты (логика **И**)
 - Сердечко на карточке → `useFavoritesStore` (persist)
@@ -53,9 +74,16 @@
 
 ### Рецепт (`/recipe/[id]`)
 
+- Нативный header: title = название рецепта (или «Рецепт» в loading / not found)
 - Загрузка одного рецепта: `useRecipe(id)` → `recipes.select('*').eq('id', id).single()`
 - Метаданные, аллергены с заменами (modal), ингредиенты, safeServing, шаги
 - Состояния: загрузка / не найден / контент
+
+### Профиль (`/profile`)
+
+- Нативный header: title «Профиль»
+- Имя мамы, возраст / дата рождения ребёнка
+- Long-press по версии → PIN-gate админки
 
 ### Гид по прикорму (`/feeding-guide`)
 
@@ -127,8 +155,9 @@ src/
     plates/                  # templates, substitutes, UI
     user/                    # onboarding store, age utils
   shared/lib/supabase.ts
+  theme/                     # JS-зеркало цветовых токенов
   types/domain.ts
-  global.css
+  global.css                 # CSS-переменные (light-only)
 ```
 
 Правила: `.agents/skills/AGENTS.md` — тонкие экраны, хуки в фичах, фичи не импортируют друг друга, рекомендации прикорма с `sourceId`, аллергены всегда с substitutes.
@@ -155,6 +184,8 @@ npx expo start
 
 ## Что дальше
 
+- Дизайн Phase 2+: сжатие фильтров, quieter recipe rows, profile как settings-list, PIN в formSheet
+- Распространить токены `colors.*` на остальные экраны (admin, feeding-guide, onboarding, plates)
 - Auth и пользовательские данные в Supabase
 - Источники гида и аллергены из БД
 - i18n

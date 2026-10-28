@@ -28,7 +28,7 @@ export function RecipesFilters({
   return (
     <View className="gap-3">
       <View className="gap-2">
-        <Text className="text-sm font-medium text-stone-500">Приём пищи</Text>
+        <Text className="text-sm font-medium text-label-muted">Приём пищи</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-grow-0">
           <View className="flex-row gap-2 pr-4">
             {MEAL_TYPE_FILTERS.map((filter) => (
@@ -45,7 +45,7 @@ export function RecipesFilters({
       </View>
 
       <View className="gap-2">
-        <Text className="text-sm font-medium text-stone-500">Исключить аллергены</Text>
+        <Text className="text-sm font-medium text-label-muted">Исключить аллергены</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-grow-0">
           <View className="flex-row gap-2 pr-4">
             {ALLERGEN_FILTERS.map((allergen) => (
@@ -62,7 +62,7 @@ export function RecipesFilters({
       </View>
 
       <View className="gap-2">
-        <Text className="text-sm font-medium text-stone-500">
+        <Text className="text-sm font-medium text-label-muted">
           Ингредиенты (все выбранные)
         </Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-grow-0">

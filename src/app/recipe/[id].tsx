@@ -1,11 +1,11 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AllergenModal } from '@/features/allergens/components/AllergenModal';
 import { getAllergensByIds } from '@/features/allergens/mockData';
 import { useRecipe } from '@/features/recipes/hooks/useRecipe';
+import { colors } from '@/theme';
 import type { Allergen } from '@/types/domain';
 
 export default function RecipeDetailScreen() {
@@ -15,29 +15,24 @@ export default function RecipeDetailScreen() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 bg-gray-50">
-        <SafeAreaView style={{ flex: 1 }}>
-          <View className="flex-1 items-center justify-center gap-3">
-            <ActivityIndicator size="large" color="#f43f5e" />
-            <Text className="text-base text-stone-500">Загрузка...</Text>
-          </View>
-        </SafeAreaView>
-      </View>
+      <>
+        <Stack.Screen options={{ title: 'Рецепт' }} />
+        <View className="flex-1 items-center justify-center gap-3 bg-surface">
+          <ActivityIndicator size="large" color={colors.brand} />
+          <Text className="text-base text-label-secondary">Загрузка...</Text>
+        </View>
+      </>
     );
   }
 
   if (isError || !recipe) {
     return (
-      <View className="flex-1 bg-gray-50">
-        <SafeAreaView style={{ flex: 1 }}>
-          <View className="px-4 pt-4">
-            <Pressable onPress={() => router.back()} className="mb-4 self-start active:opacity-70">
-              <Text className="text-base font-medium text-rose-500">Назад</Text>
-            </Pressable>
-            <Text className="text-xl font-semibold text-stone-800">Рецепт не найден</Text>
-          </View>
-        </SafeAreaView>
-      </View>
+      <>
+        <Stack.Screen options={{ title: 'Рецепт' }} />
+        <View className="flex-1 bg-surface px-4 pt-4">
+          <Text className="text-xl font-semibold text-label">Рецепт не найден</Text>
+        </View>
+      </>
     );
   }
 
@@ -45,18 +40,14 @@ export default function RecipeDetailScreen() {
   const hasAllergens = allergens.length > 0;
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerClassName="gap-5 px-4 pb-8 pt-4">
-          <Pressable onPress={() => router.back()} className="self-start active:opacity-70">
-            <Text className="text-base font-medium text-rose-500">Назад</Text>
-          </Pressable>
+    <>
+      <Stack.Screen options={{ title: recipe.title }} />
 
-          <Text className="text-3xl font-bold text-stone-900">{recipe.title}</Text>
-
-          <View className="rounded-2xl bg-white p-4 shadow-sm">
-            <Text className="text-sm text-stone-500">С {recipe.minAgeMonths} мес.</Text>
-            <Text className="mt-1 text-sm text-stone-500">
+      <View className="flex-1 bg-surface">
+        <ScrollView contentContainerClassName="gap-5 px-4 pb-8 pt-3">
+          <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
+            <Text className="text-sm text-label-secondary">С {recipe.minAgeMonths} мес.</Text>
+            <Text className="mt-1 text-sm text-label-secondary">
               {recipe.caloriesPer100g} ккал / 100 г
             </Text>
             {recipe.isPremium ? (
@@ -67,9 +58,9 @@ export default function RecipeDetailScreen() {
           </View>
 
           {hasAllergens ? (
-            <View className="gap-3 rounded-2xl bg-red-50 p-4">
-              <Text className="text-sm font-semibold text-red-700">Содержит аллергены</Text>
-              <Text className="text-sm text-red-600">
+            <View className="gap-3 rounded-2xl bg-danger-soft p-4">
+              <Text className="text-sm font-semibold text-danger">Содержит аллергены</Text>
+              <Text className="text-sm text-danger">
                 Нажмите на аллерген, чтобы увидеть возможные замены.
               </Text>
               <View className="flex-row flex-wrap gap-2">
@@ -77,8 +68,8 @@ export default function RecipeDetailScreen() {
                   <Pressable
                     key={allergen.id}
                     onPress={() => setSelectedAllergen(allergen)}
-                    className="rounded-full bg-red-100 px-3 py-2 active:opacity-80">
-                    <Text className="text-sm font-medium text-red-700">{allergen.label}</Text>
+                    className="rounded-full bg-danger-soft px-3 py-2 active:opacity-80">
+                    <Text className="text-sm font-medium text-danger">{allergen.label}</Text>
                   </Pressable>
                 ))}
               </View>
@@ -86,12 +77,12 @@ export default function RecipeDetailScreen() {
           ) : null}
 
           <View className="gap-3">
-            <Text className="text-xl font-semibold text-stone-900">Ингредиенты</Text>
-            <View className="rounded-2xl bg-white p-4 shadow-sm">
+            <Text className="text-xl font-semibold text-label">Ингредиенты</Text>
+            <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
               {recipe.ingredients.map((ingredient) => (
                 <Text
                   key={`${ingredient.productId}-${ingredient.unit}`}
-                  className="mb-2 text-base text-stone-700 last:mb-0">
+                  className="mb-2 text-base text-label-secondary last:mb-0">
                   {ingredient.productId}: {ingredient.amount} {ingredient.unit}
                 </Text>
               ))}
@@ -101,30 +92,30 @@ export default function RecipeDetailScreen() {
           {recipe.safeServing ? (
             <View className="gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4">
               <Text className="text-base font-semibold text-amber-800">
-                🛡️ Безопасная подача
+                Безопасная подача
               </Text>
               <Text className="text-sm leading-5 text-amber-900">{recipe.safeServing}</Text>
             </View>
           ) : null}
 
           <View className="gap-3">
-            <Text className="text-xl font-semibold text-stone-900">Приготовление</Text>
-            <View className="rounded-2xl bg-white p-4 shadow-sm">
+            <Text className="text-xl font-semibold text-label">Приготовление</Text>
+            <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
               {recipe.steps.map((step, index) => (
                 <Text
                   key={`${recipe.id}-step-${index}`}
-                  className="mb-3 text-base text-stone-700 last:mb-0">
+                  className="mb-3 text-base text-label-secondary last:mb-0">
                   {index + 1}. {step}
                 </Text>
               ))}
             </View>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
 
       {selectedAllergen ? (
         <AllergenModal allergen={selectedAllergen} onClose={() => setSelectedAllergen(null)} />
       ) : null}
-    </View>
+    </>
   );
 }

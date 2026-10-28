@@ -1,10 +1,11 @@
+import { Stack } from 'expo-router';
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RecipeCard } from '@/features/recipes/components/RecipeCard';
 import { RecipesFilters } from '@/features/recipes/components/RecipesFilters';
 import { useRecipes } from '@/features/recipes/hooks/useRecipes';
 import { useRecipesFilters } from '@/features/recipes/hooks/useRecipesFilters';
+import { colors } from '@/theme';
 
 export default function RecipesScreen() {
   const { data, isLoading, isError } = useRecipes();
@@ -23,32 +24,36 @@ export default function RecipesScreen() {
   } = useRecipesFilters(data ?? []);
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <SafeAreaView style={{ flex: 1 }}>
-        <View className="gap-4 px-4 pb-2 pt-4">
-          <View className="flex-row items-center justify-between gap-3">
-            <Text className="flex-1 text-3xl font-bold text-stone-900">Рецепты</Text>
-            {hasActiveFilters ? (
-              <Pressable onPress={resetFilters} className="active:opacity-70">
-                <Text className="text-sm font-medium text-rose-500">Сбросить фильтры</Text>
-              </Pressable>
-            ) : null}
-          </View>
+    <>
+      <Stack.Screen
+        options={{
+          title: 'Рецепты',
+          headerRight: hasActiveFilters
+            ? () => (
+                <Pressable onPress={resetFilters} className="px-1 active:opacity-70">
+                  <Text className="text-sm font-medium text-brand">Сбросить</Text>
+                </Pressable>
+              )
+            : undefined,
+        }}
+      />
 
+      <View className="flex-1 bg-surface">
+        <View className="gap-4 px-4 pb-2 pt-3">
           {!isLoading && !isError ? (
             <>
               <Pressable
                 onPress={toggleFavoritesOnly}
                 className={`self-start rounded-full border px-4 py-2 active:opacity-80 ${
                   favoritesOnly
-                    ? 'border-red-500 bg-red-500'
-                    : 'border-stone-200 bg-white'
+                    ? 'border-danger bg-danger'
+                    : 'border-border bg-surface-elevated'
                 }`}>
                 <Text
                   className={`text-sm font-medium ${
-                    favoritesOnly ? 'text-white' : 'text-stone-700'
+                    favoritesOnly ? 'text-white' : 'text-label-secondary'
                   }`}>
-                  ♥ Избранное
+                  Избранное
                 </Text>
               </Pressable>
 
@@ -66,14 +71,14 @@ export default function RecipesScreen() {
 
         {isLoading ? (
           <View className="flex-1 items-center justify-center gap-3">
-            <ActivityIndicator size="large" color="#f43f5e" />
-            <Text className="text-base text-stone-500">Загрузка...</Text>
+            <ActivityIndicator size="large" color={colors.brand} />
+            <Text className="text-base text-label-secondary">Загрузка...</Text>
           </View>
         ) : null}
 
         {isError ? (
           <View className="flex-1 items-center justify-center px-6">
-            <Text className="text-center text-base text-red-600">Ошибка загрузки</Text>
+            <Text className="text-center text-base text-danger">Ошибка загрузки</Text>
           </View>
         ) : null}
 
@@ -83,7 +88,7 @@ export default function RecipesScreen() {
             keyExtractor={(item) => item.id}
             contentContainerClassName="gap-3 px-4 pb-6"
             ListEmptyComponent={
-              <Text className="mt-8 text-center text-base text-stone-500">
+              <Text className="mt-8 text-center text-base text-label-secondary">
                 {favoritesOnly
                   ? 'В избранном пока нет рецептов'
                   : 'Нет рецептов по выбранным фильтрам'}
@@ -92,7 +97,7 @@ export default function RecipesScreen() {
             renderItem={({ item }) => <RecipeCard recipe={item} />}
           />
         ) : null}
-      </SafeAreaView>
-    </View>
+      </View>
+    </>
   );
 }

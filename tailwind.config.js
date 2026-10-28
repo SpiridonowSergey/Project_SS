@@ -2,10 +2,31 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
-  // NativeWind web: 'media' throws if anything sets colorScheme; we stay light via classes only.
+  // Light-only product theme. Keep class strategy to avoid NativeWind web media crash.
   darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        brand: {
+          DEFAULT: "var(--color-brand)",
+          soft: "var(--color-brand-soft)",
+        },
+        danger: {
+          DEFAULT: "var(--color-danger)",
+          soft: "var(--color-danger-soft)",
+        },
+        surface: {
+          DEFAULT: "var(--color-surface)",
+          elevated: "var(--color-surface-elevated)",
+        },
+        label: {
+          DEFAULT: "var(--color-label)",
+          secondary: "var(--color-label-secondary)",
+          muted: "var(--color-label-muted)",
+        },
+        border: "var(--color-border)",
+      },
+    },
   },
   plugins: [],
 };
