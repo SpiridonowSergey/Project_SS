@@ -29,7 +29,7 @@ export default function RecipeDetailScreen() {
     return (
       <>
         <Stack.Screen options={{ title: 'Рецепт' }} />
-        <View className="flex-1 bg-surface px-4 pt-4">
+        <View className="flex-1 bg-surface px-4 pt-2">
           <Text className="text-xl font-semibold text-label">Рецепт не найден</Text>
         </View>
       </>
@@ -44,7 +44,7 @@ export default function RecipeDetailScreen() {
       <Stack.Screen options={{ title: recipe.title }} />
 
       <View className="flex-1 bg-surface">
-        <ScrollView contentContainerClassName="gap-5 px-4 pb-8 pt-3">
+        <ScrollView contentContainerClassName="gap-5 px-4 pb-8 pt-2">
           <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
             <Text className="text-sm text-label-secondary">С {recipe.minAgeMonths} мес.</Text>
             <Text className="mt-1 text-sm text-label-secondary">

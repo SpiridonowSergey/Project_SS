@@ -28,6 +28,7 @@ export default function RecipesScreen() {
       <Stack.Screen
         options={{
           title: 'Рецепты',
+          headerBackButtonDisplayMode: 'minimal',
           headerRight: hasActiveFilters
             ? () => (
                 <Pressable onPress={resetFilters} className="px-1 active:opacity-70">
@@ -39,7 +40,7 @@ export default function RecipesScreen() {
       />
 
       <View className="flex-1 bg-surface">
-        <View className="gap-4 px-4 pb-2 pt-3">
+        <View className="gap-4 px-4 pb-2 pt-2">
           {!isLoading && !isError ? (
             <>
               <Pressable

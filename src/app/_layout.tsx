@@ -40,12 +40,21 @@ function RootNavigator() {
         contentStyle: { backgroundColor: colors.surface },
       }}>
       <Stack.Protected guard={isOnboarded} redirectTo="/onboarding">
-        <Stack.Screen name="index" />
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: false,
+            title: ' ',
+            headerBackTitle: ' ',
+          }}
+        />
         <Stack.Screen
           name="recipes"
           options={{
             headerShown: true,
             title: 'Рецепты',
+            headerBackTitle: 'Рецепты',
+            headerBackButtonDisplayMode: 'minimal',
           }}
         />
         <Stack.Screen
@@ -63,6 +72,7 @@ function RootNavigator() {
           options={{
             headerShown: true,
             title: 'Профиль',
+            headerBackButtonDisplayMode: 'minimal',
           }}
         />
         <Stack.Screen name="admin" />

@@ -19,7 +19,7 @@ export default function ProfileScreen() {
 
   return (
     <View className="flex-1 bg-surface">
-      <View className="flex-1 px-4 pb-6 pt-3">
+      <View className="flex-1 px-4 pb-6 pt-2">
         <View className="gap-3 rounded-2xl bg-surface-elevated p-5 shadow-sm">
           <Text className="text-lg font-semibold text-label">{motherName}</Text>
           {childAgeLabel ? (
