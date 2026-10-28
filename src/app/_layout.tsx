@@ -51,15 +51,19 @@ function RootNavigator() {
         <Stack.Screen
           name="recipes"
           options={{
-            headerShown: false, // <--- УБИРАЕМ НАТИВНЫЙ ХЕДЕР
+            headerShown: true,
+            headerTransparent: false,
+            title: 'Рецепты',
+            headerBackTitle: 'Рецепты',
+            headerBackButtonDisplayMode: 'minimal',
           }}
         />
         <Stack.Screen
           name="recipe/[id]"
           options={{
-            headerShown: true, // <--- ЗДЕСЬ ОСТАВЛЯЕМ (для кнопки назад)
-            title: 'Рецепт', 
-            headerBackTitle: ' ',
+            headerShown: true,
+            headerTransparent: false,
+            title: 'Рецепт',
             headerBackButtonDisplayMode: 'minimal',
           }}
         />
@@ -69,7 +73,9 @@ function RootNavigator() {
         <Stack.Screen
           name="profile"
           options={{
-            headerShown: false, // <--- УБИРАЕМ НАТИВНЫЙ ХЕДЕР
+            headerShown: true,
+            title: 'Профиль',
+            headerBackButtonDisplayMode: 'minimal',
           }}
         />
         <Stack.Screen name="admin" options={{ headerShown: false }} />

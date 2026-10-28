@@ -15,6 +15,10 @@ module.exports = {
           DEFAULT: "var(--color-danger)",
           soft: "var(--color-danger-soft)",
         },
+        warning: {
+          DEFAULT: "var(--color-warning)",
+          soft: "var(--color-warning-soft)",
+        },
         surface: {
           DEFAULT: "var(--color-surface)",
           elevated: "var(--color-surface-elevated)",
@@ -25,6 +29,7 @@ module.exports = {
           muted: "var(--color-label-muted)",
         },
         border: "var(--color-border)",
+        onTint: "var(--color-on-tint)",
       },
     },
   },

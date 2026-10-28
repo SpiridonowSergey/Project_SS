@@ -29,7 +29,7 @@ export function FilterChip({
       }`}>
       <Text
         className={`text-sm font-medium ${
-          selected ? 'text-white' : 'text-label-secondary'
+          selected ? 'text-onTint' : 'text-label-secondary'
         }`}>
         {label}
       </Text>

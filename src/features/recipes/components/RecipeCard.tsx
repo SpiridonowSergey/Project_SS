@@ -27,7 +27,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           <Ionicons
             name={isFavorite ? 'heart' : 'heart-outline'}
             size={22}
-            color={isFavorite ? colors.danger : colors.labelMuted}
+            color={isFavorite ? colors.brand : colors.labelMuted}
           />
         </Pressable>
       </View>
@@ -36,8 +36,8 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
         <Pressable className="p-4 pr-12 active:opacity-80">
           <View className="flex-row flex-wrap gap-2">
             {recipe.isPremium ? (
-              <View className="rounded-full bg-amber-100 px-2.5 py-1">
-                <Text className="text-xs font-semibold text-amber-700">Premium</Text>
+              <View className="rounded-full bg-warning-soft px-2.5 py-1">
+                <Text className="text-xs font-semibold text-warning">Premium</Text>
               </View>
             ) : null}
             {hasAllergens ? (

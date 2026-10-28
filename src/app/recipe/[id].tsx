@@ -16,11 +16,11 @@ export default function RecipeDetailScreen() {
   if (isLoading) {
     return (
       <>
-        <Stack.Screen options={{ title: 'Рецепт' }} />
         <View className="flex-1 items-center justify-center gap-3 bg-surface">
           <ActivityIndicator size="large" color={colors.brand} />
           <Text className="text-base text-label-secondary">Загрузка...</Text>
         </View>
+        <Stack.Screen options={{ title: 'Рецепт' }} />
       </>
     );
   }
@@ -28,10 +28,10 @@ export default function RecipeDetailScreen() {
   if (isError || !recipe) {
     return (
       <>
-        <Stack.Screen options={{ title: 'Рецепт' }} />
         <View className="flex-1 bg-surface px-4 pt-2">
           <Text className="text-xl font-semibold text-label">Рецепт не найден</Text>
         </View>
+        <Stack.Screen options={{ title: 'Рецепт' }} />
       </>
     );
   }
@@ -41,77 +41,76 @@ export default function RecipeDetailScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: recipe.title }} />
+      <ScrollView
+        className="flex-1 bg-surface"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerClassName="gap-5 px-4 pb-8 pt-2">
+        <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
+          <Text className="text-sm text-label-secondary">С {recipe.minAgeMonths} мес.</Text>
+          <Text className="mt-1 text-sm text-label-secondary">
+            {recipe.caloriesPer100g} ккал / 100 г
+          </Text>
+          {recipe.isPremium ? (
+            <View className="mt-3 self-start rounded-full bg-warning-soft px-2.5 py-1">
+              <Text className="text-xs font-semibold text-warning">Premium</Text>
+            </View>
+          ) : null}
+        </View>
 
-      <View className="flex-1 bg-surface">
-        <ScrollView contentContainerClassName="gap-5 px-4 pb-8 pt-2">
-          <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
-            <Text className="text-sm text-label-secondary">С {recipe.minAgeMonths} мес.</Text>
-            <Text className="mt-1 text-sm text-label-secondary">
-              {recipe.caloriesPer100g} ккал / 100 г
+        {hasAllergens ? (
+          <View className="gap-3 rounded-2xl bg-danger-soft p-4">
+            <Text className="text-sm font-semibold text-danger">Содержит аллергены</Text>
+            <Text className="text-sm text-danger">
+              Нажмите на аллерген, чтобы увидеть возможные замены.
             </Text>
-            {recipe.isPremium ? (
-              <View className="mt-3 self-start rounded-full bg-amber-100 px-2.5 py-1">
-                <Text className="text-xs font-semibold text-amber-700">Premium</Text>
-              </View>
-            ) : null}
-          </View>
-
-          {hasAllergens ? (
-            <View className="gap-3 rounded-2xl bg-danger-soft p-4">
-              <Text className="text-sm font-semibold text-danger">Содержит аллергены</Text>
-              <Text className="text-sm text-danger">
-                Нажмите на аллерген, чтобы увидеть возможные замены.
-              </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {allergens.map((allergen) => (
-                  <Pressable
-                    key={allergen.id}
-                    onPress={() => setSelectedAllergen(allergen)}
-                    className="rounded-full bg-danger-soft px-3 py-2 active:opacity-80">
-                    <Text className="text-sm font-medium text-danger">{allergen.label}</Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-          ) : null}
-
-          <View className="gap-3">
-            <Text className="text-xl font-semibold text-label">Ингредиенты</Text>
-            <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
-              {recipe.ingredients.map((ingredient) => (
-                <Text
-                  key={`${ingredient.productId}-${ingredient.unit}`}
-                  className="mb-2 text-base text-label-secondary last:mb-0">
-                  {ingredient.productId}: {ingredient.amount} {ingredient.unit}
-                </Text>
+            <View className="flex-row flex-wrap gap-2">
+              {allergens.map((allergen) => (
+                <Pressable
+                  key={allergen.id}
+                  onPress={() => setSelectedAllergen(allergen)}
+                  className="rounded-full bg-danger-soft px-3 py-2 active:opacity-80">
+                  <Text className="text-sm font-medium text-danger">{allergen.label}</Text>
+                </Pressable>
               ))}
             </View>
           </View>
+        ) : null}
 
-          {recipe.safeServing ? (
-            <View className="gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-              <Text className="text-base font-semibold text-amber-800">
-                Безопасная подача
+        <View className="gap-3">
+          <Text className="text-xl font-semibold text-label">Ингредиенты</Text>
+          <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
+            {recipe.ingredients.map((ingredient) => (
+              <Text
+                key={`${ingredient.productId}-${ingredient.unit}`}
+                className="mb-2 text-base text-label-secondary last:mb-0">
+                {ingredient.productId}: {ingredient.amount} {ingredient.unit}
               </Text>
-              <Text className="text-sm leading-5 text-amber-900">{recipe.safeServing}</Text>
-            </View>
-          ) : null}
-
-          <View className="gap-3">
-            <Text className="text-xl font-semibold text-label">Приготовление</Text>
-            <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
-              {recipe.steps.map((step, index) => (
-                <Text
-                  key={`${recipe.id}-step-${index}`}
-                  className="mb-3 text-base text-label-secondary last:mb-0">
-                  {index + 1}. {step}
-                </Text>
-              ))}
-            </View>
+            ))}
           </View>
-        </ScrollView>
-      </View>
+        </View>
+
+        {recipe.safeServing ? (
+          <View className="gap-2 rounded-2xl border border-warning/30 bg-warning-soft p-4">
+            <Text className="text-base font-semibold text-warning">Безопасная подача</Text>
+            <Text className="text-sm leading-5 text-warning">{recipe.safeServing}</Text>
+          </View>
+        ) : null}
+
+        <View className="gap-3">
+          <Text className="text-xl font-semibold text-label">Приготовление</Text>
+          <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
+            {recipe.steps.map((step, index) => (
+              <Text
+                key={`${recipe.id}-step-${index}`}
+                className="mb-3 text-base text-label-secondary last:mb-0">
+                {index + 1}. {step}
+              </Text>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+
+      <Stack.Screen options={{ title: recipe.title }} />
 
       {selectedAllergen ? (
         <AllergenModal allergen={selectedAllergen} onClose={() => setSelectedAllergen(null)} />

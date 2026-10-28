@@ -14,10 +14,13 @@
   --color-brand-soft: #fff1f2;
   --color-danger: #ef4444;
   --color-danger-soft: #fef2f2;
+  --color-warning: #b45309;
+  --color-warning-soft: #fffbeb;
   --color-surface: #f9fafb;
   --color-surface-elevated: #ffffff;
   --color-label: #1c1917;
   --color-label-secondary: #57534e;
   --color-label-muted: #a8a29e;
   --color-border: #e7e5e4;
+  --color-on-tint: #ffffff;
 }
