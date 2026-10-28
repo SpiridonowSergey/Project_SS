@@ -150,6 +150,27 @@ export function AddRecipeForm() {
         />
       </View>
 
+      <View className="gap-2">
+        <Text className="text-sm font-medium text-stone-300">Ссылка на изображение (imageUrl)</Text>
+        <Controller
+          control={control}
+          name="imageUrl"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+              placeholder="https://…"
+              placeholderTextColor="#78716c"
+              className="rounded-2xl border border-stone-700 bg-stone-800 px-4 py-3 text-base text-white"
+            />
+          )}
+        />
+      </View>
+
       <View className="flex-row items-center justify-between rounded-2xl border border-stone-700 bg-stone-800 px-4 py-3">
         <Text className="text-base text-stone-200">Платный (Premium)</Text>
         <Controller

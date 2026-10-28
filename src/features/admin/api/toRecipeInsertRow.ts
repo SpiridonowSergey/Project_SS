@@ -6,6 +6,7 @@ export type RecipeInsertRow = {
   calories_per_100g: number;
   meal_type: RecipeFormValues['mealType'];
   safe_serving: string | null;
+  image_url: string | null;
   is_premium: boolean;
   allergen_ids: string[];
   ingredients: {
@@ -34,6 +35,7 @@ export function toRecipeInsertRow(values: RecipeFormValues): RecipeInsertRow {
     calories_per_100g: values.caloriesPer100g,
     meal_type: values.mealType,
     safe_serving: values.safeServing?.trim() ? values.safeServing.trim() : null,
+    image_url: values.imageUrl?.trim() ? values.imageUrl.trim() : null,
     is_premium: values.isPremium,
     allergen_ids: parseAllergenIdsText(values.allergenIdsText),
     ingredients: values.ingredients.map((ingredient) => ({

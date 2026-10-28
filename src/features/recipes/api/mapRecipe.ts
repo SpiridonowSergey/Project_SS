@@ -11,6 +11,7 @@ type RecipeRow = {
   is_premium: boolean;
   meal_type: string;
   safe_serving?: string | null;
+  image_url?: string | null;
 };
 
 const MEAL_TYPES: MealType[] = ['breakfast', 'lunch', 'dinner', 'snack'];
@@ -75,6 +76,7 @@ export function mapRecipeRow(row: RecipeRow): Recipe {
     isPremium: Boolean(row.is_premium),
     mealType: mapMealType(row.meal_type),
     safeServing: row.safe_serving ?? undefined,
+    imageUrl: row.image_url?.trim() ? row.image_url.trim() : undefined,
   };
 }
 
