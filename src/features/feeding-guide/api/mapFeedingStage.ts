@@ -1,6 +1,7 @@
 import type { FeedingStage } from '@/types/domain';
 
 type FeedingStageRow = {
+  id: string;
   age_months: number;
   product_group: string;
   start_volume: string;
@@ -11,6 +12,7 @@ type FeedingStageRow = {
 
 export function mapFeedingStageRow(row: FeedingStageRow): FeedingStage {
   return {
+    id: row.id,
     ageMonths: row.age_months,
     productGroup: row.product_group,
     startVolume: row.start_volume,
@@ -27,6 +29,7 @@ export function isFeedingStageRow(value: unknown): value is FeedingStageRow {
 
   const row = value as Record<string, unknown>;
   return (
+    typeof row.id === 'string' &&
     typeof row.age_months === 'number' &&
     typeof row.product_group === 'string' &&
     typeof row.start_volume === 'string' &&

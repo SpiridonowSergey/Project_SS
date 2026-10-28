@@ -40,6 +40,7 @@ export type Recipe = {
 };
 
 export type FeedingStage = {
+  id: string;
   ageMonths: number;
   productGroup: string;
   startVolume: string;

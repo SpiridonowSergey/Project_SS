@@ -1,14 +1,50 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AddRecipeForm } from '@/features/admin/components/AddRecipeForm';
+import { ManageFeedingStagesList } from '@/features/admin/components/ManageFeedingStagesList';
+import { ManageRecipesList } from '@/features/admin/components/ManageRecipesList';
+import {
+  confirmDeleteFeedingStage,
+  useDeleteFeedingStage,
+} from '@/features/feeding-guide/hooks/useDeleteFeedingStage';
+import { useFeedingGuide } from '@/features/feeding-guide/hooks/useFeedingGuide';
+import {
+  confirmDeleteRecipe,
+  useDeleteRecipe,
+} from '@/features/recipes/hooks/useDeleteRecipe';
+import { useRecipes } from '@/features/recipes/hooks/useRecipes';
+import type { FeedingStage, Recipe } from '@/types/domain';
 
-type AdminTab = 'add-recipe';
+type AdminTab = 'add-recipe' | 'manage-recipes' | 'manage-guide';
+
+const TABS: { id: AdminTab; label: string }[] = [
+  { id: 'add-recipe', label: 'Добавить рецепт' },
+  { id: 'manage-recipes', label: 'Управление рецептами' },
+  { id: 'manage-guide', label: 'Управление гидом' },
+];
 
 export default function AdminScreen() {
   const [tab, setTab] = useState<AdminTab>('add-recipe');
+
+  const recipesQuery = useRecipes();
+  const feedingGuideQuery = useFeedingGuide();
+  const deleteRecipeMutation = useDeleteRecipe();
+  const deleteStageMutation = useDeleteFeedingStage();
+
+  function handleDeleteRecipe(recipe: Recipe) {
+    confirmDeleteRecipe(recipe.title, () => {
+      deleteRecipeMutation.mutate(recipe.id);
+    });
+  }
+
+  function handleDeleteStage(stage: FeedingStage) {
+    confirmDeleteFeedingStage(`${stage.ageMonths} мес. · ${stage.productGroup}`, () => {
+      deleteStageMutation.mutate(stage.id);
+    });
+  }
 
   return (
     <View className="flex-1 bg-stone-900">
@@ -20,23 +56,51 @@ export default function AdminScreen() {
 
           <Text className="text-3xl font-bold text-white">Админка</Text>
 
-          <View className="flex-row gap-2">
-            <Pressable
-              onPress={() => setTab('add-recipe')}
-              className={`rounded-full px-4 py-2 ${
-                tab === 'add-recipe' ? 'bg-rose-500' : 'bg-stone-800'
-              }`}>
-              <Text
-                className={`text-sm font-medium ${
-                  tab === 'add-recipe' ? 'text-white' : 'text-stone-300'
-                }`}>
-                Добавить рецепт
-              </Text>
-            </Pressable>
-          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View className="flex-row gap-2">
+              {TABS.map((item) => {
+                const selected = tab === item.id;
+                return (
+                  <Pressable
+                    key={item.id}
+                    onPress={() => setTab(item.id)}
+                    className={`rounded-full px-4 py-2 ${
+                      selected ? 'bg-rose-500' : 'bg-stone-800'
+                    }`}>
+                    <Text
+                      className={`text-sm font-medium ${
+                        selected ? 'text-white' : 'text-stone-300'
+                      }`}>
+                      {item.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </ScrollView>
         </View>
 
         {tab === 'add-recipe' ? <AddRecipeForm /> : null}
+
+        {tab === 'manage-recipes' ? (
+          <ManageRecipesList
+            recipes={recipesQuery.data ?? []}
+            isLoading={recipesQuery.isLoading}
+            isError={recipesQuery.isError}
+            isDeleting={deleteRecipeMutation.isPending}
+            onDelete={handleDeleteRecipe}
+          />
+        ) : null}
+
+        {tab === 'manage-guide' ? (
+          <ManageFeedingStagesList
+            stages={feedingGuideQuery.stages}
+            isLoading={feedingGuideQuery.isLoading}
+            isError={feedingGuideQuery.isError}
+            isDeleting={deleteStageMutation.isPending}
+            onDelete={handleDeleteStage}
+          />
+        ) : null}
       </SafeAreaView>
     </View>
   );

@@ -2,22 +2,23 @@
 import { FeedingStage, MedicalSource } from '../../types/domain';
 
 export const SOURCES: Record<string, MedicalSource> = {
-  'nat_program_2009': {
+  nat_program_2009: {
     id: 'nat_program_2009',
     title: 'Национальная программа оптимизации вскармливания детей первого года жизни',
     organization: 'Союз педиатров России',
     url: 'https://pediatr-russia.ru/',
   },
-  'who_2023': {
+  who_2023: {
     id: 'who_2023',
     title: 'Рекомендации ВОЗ по прикорму',
     organization: 'Всемирная организация здравоохранения',
     url: 'https://www.who.int/',
-  }
+  },
 };
 
 export const MOCK_FEEDING_STAGES: FeedingStage[] = [
   {
+    id: 'stage-veg-4',
     ageMonths: 4,
     productGroup: 'Овощное пюре',
     startVolume: '10-150 г',
@@ -26,6 +27,7 @@ export const MOCK_FEEDING_STAGES: FeedingStage[] = [
     notes: 'Начинать с монокомпонентных пюре (кабачок, брокколи).',
   },
   {
+    id: 'stage-cereal-5',
     ageMonths: 5,
     productGroup: 'Каши (безглютеновые)',
     startVolume: '10-150 г',
@@ -34,6 +36,7 @@ export const MOCK_FEEDING_STAGES: FeedingStage[] = [
     notes: 'Гречневая, рисовая, кукурузная. Начинать с 5%.',
   },
   {
+    id: 'stage-meat-6',
     ageMonths: 6,
     productGroup: 'Мясное пюре',
     startVolume: '5-30 г',
@@ -42,11 +45,12 @@ export const MOCK_FEEDING_STAGES: FeedingStage[] = [
     notes: 'Индейка, кролик, телятина. Добавлять в овощное пюре.',
   },
   {
+    id: 'stage-fruit-7',
     ageMonths: 7,
     productGroup: 'Фруктовые пюре',
     startVolume: '20-50 г',
     targetVolume: '70 г',
     sourceId: 'nat_program_2009',
     notes: 'Яблоко, груша, банан (монокомпонентные).',
-  }
+  },
 ];
