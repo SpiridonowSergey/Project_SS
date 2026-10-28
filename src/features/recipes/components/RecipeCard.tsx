@@ -20,7 +20,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
       <View className="absolute right-1 top-1 z-10">
         <Pressable
           onPress={() => toggleFavorite(recipe.id)}
-          hitSlop={4}
+          hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
           className="h-11 w-11 items-center justify-center active:opacity-70">
@@ -41,7 +41,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             <View className="mb-1.5 flex-row flex-wrap gap-2">
               {recipe.isPremium ? (
                 <View className="rounded-full bg-warning-soft px-2.5 py-0.5">
-                  <Text className="type-caption font-semibold text-warning">Premium</Text>
+                  <Text className="type-caption font-semibold text-warning">Премиум</Text>
                 </View>
               ) : null}
               {hasAllergens ? (
@@ -52,7 +52,9 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             </View>
           ) : null}
 
-          <Text className="type-headline text-label">{recipe.title}</Text>
+          <Text className="type-headline text-label" numberOfLines={2}>
+            {recipe.title}
+          </Text>
 
           <Text className="mt-1 type-caption text-label-secondary">
             С {recipe.minAgeMonths} мес. · {recipe.caloriesPer100g} ккал / 100 г

@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
 
+import { FilterChip } from '@/features/recipes/components/FilterChip';
 import { RecipeCard } from '@/features/recipes/components/RecipeCard';
 import { RecipesFilters } from '@/features/recipes/components/RecipesFilters';
 import { useRecipes } from '@/features/recipes/hooks/useRecipes';
@@ -8,7 +9,7 @@ import { useRecipesFilters } from '@/features/recipes/hooks/useRecipesFilters';
 import { colors } from '@/theme';
 
 export default function RecipesScreen() {
-  const { data, isLoading, isError } = useRecipes();
+  const { data, isLoading, isError, refetch, isRefetching } = useRecipes();
   const {
     mealType,
     favoritesOnly,
@@ -24,6 +25,7 @@ export default function RecipesScreen() {
   } = useRecipesFilters(data ?? []);
 
   const listData = !isLoading && !isError ? filteredRecipes : [];
+  const showFilters = !isLoading && !isError;
 
   return (
     <>
@@ -33,24 +35,15 @@ export default function RecipesScreen() {
         keyExtractor={(item) => item.id}
         contentContainerClassName={listData.length === 0 ? 'flex-grow pb-6' : 'pb-6'}
         ListHeaderComponent={
-          !isLoading && !isError ? (
-            <View className="border-b border-border/50 px-4 pb-4 pt-2">
-              <Pressable
-                onPress={toggleFavoritesOnly}
-                accessibilityRole="button"
-                accessibilityState={{ selected: favoritesOnly }}
-                className={`mb-4 min-h-11 self-start items-center justify-center rounded-full border px-4 active:opacity-80 ${
-                  favoritesOnly
-                    ? 'border-brand bg-brand'
-                    : 'border-border bg-surface-elevated'
-                }`}>
-                <Text
-                  className={`type-caption font-medium ${
-                    favoritesOnly ? 'text-onTint' : 'text-label-secondary'
-                  }`}>
-                  Избранное
-                </Text>
-              </Pressable>
+          showFilters ? (
+            <View className="gap-4 border-b border-border/50 px-4 pb-4 pt-2">
+              <View className="self-start">
+                <FilterChip
+                  label="Избранное"
+                  selected={favoritesOnly}
+                  onPress={toggleFavoritesOnly}
+                />
+              </View>
 
               <RecipesFilters
                 mealType={mealType}
@@ -70,8 +63,22 @@ export default function RecipesScreen() {
               <Text className="type-body text-label-secondary">Загрузка...</Text>
             </View>
           ) : isError ? (
-            <View className="flex-1 items-center justify-center px-4 py-16">
-              <Text className="text-center type-body text-danger">Ошибка загрузки</Text>
+            <View className="flex-1 items-center justify-center gap-4 px-4 py-16">
+              <Text className="text-center type-body text-danger">Не удалось загрузить рецепты</Text>
+              <Pressable
+                onPress={() => {
+                  void refetch();
+                }}
+                disabled={isRefetching}
+                accessibilityRole="button"
+                accessibilityLabel="Повторить загрузку рецептов"
+                className="min-h-11 items-center justify-center rounded-2xl bg-brand px-5 active:opacity-80 disabled:opacity-60">
+                {isRefetching ? (
+                  <ActivityIndicator color={colors.onTint} />
+                ) : (
+                  <Text className="type-headline text-onTint">Повторить</Text>
+                )}
+              </Pressable>
             </View>
           ) : (
             <Text className="mt-8 px-4 text-center type-body text-label-secondary">

@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-28T14:30:00.000Z",
+  "title": "Design System: Project_SS",
+  "extensions": {
+    "colorMeta": {
+      "care-rose": {
+        "role": "primary",
+        "displayName": "Care Rose",
+        "canonical": "#f43f5e",
+        "tonalRamp": ["#4c0519", "#881337", "#be123c", "#e11d48", "#f43f5e", "#fb7185", "#fda4af", "#fff1f2"]
+      },
+      "care-rose-soft": {
+        "role": "primary",
+        "displayName": "Care Rose Soft",
+        "canonical": "#fff1f2",
+        "tonalRamp": ["#881337", "#be123c", "#f43f5e", "#fb7185", "#fecdd3", "#ffe4e6", "#fff1f2", "#fffafb"]
+      },
+      "allergy-signal": {
+        "role": "primary",
+        "displayName": "Allergy Signal",
+        "canonical": "#ef4444",
+        "tonalRamp": ["#450a0a", "#7f1d1d", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fef2f2"]
+      },
+      "allergy-signal-soft": {
+        "role": "neutral",
+        "displayName": "Allergy Signal Soft",
+        "canonical": "#fef2f2",
+        "tonalRamp": ["#7f1d1d", "#dc2626", "#ef4444", "#f87171", "#fecaca", "#fee2e2", "#fef2f2", "#fffbfb"]
+      },
+      "premium-amber": {
+        "role": "primary",
+        "displayName": "Premium Amber",
+        "canonical": "#b45309",
+        "tonalRamp": ["#451a03", "#78350f", "#92400e", "#b45309", "#d97706", "#f59e0b", "#fcd34d", "#fffbeb"]
+      },
+      "premium-amber-soft": {
+        "role": "neutral",
+        "displayName": "Premium Amber Soft",
+        "canonical": "#fffbeb",
+        "tonalRamp": ["#78350f", "#b45309", "#d97706", "#fbbf24", "#fde68a", "#fef3c7", "#fffbeb", "#fffef7"]
+      },
+      "clinic-mist": {
+        "role": "neutral",
+        "displayName": "Clinic Mist",
+        "canonical": "#f9fafb",
+        "tonalRamp": ["#111827", "#374151", "#6b7280", "#9ca3af", "#d1d5db", "#e5e7eb", "#f3f4f6", "#f9fafb"]
+      },
+      "notebook-page": {
+        "role": "neutral",
+        "displayName": "Notebook Page",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#1c1917", "#44403c", "#78716c", "#a8a29e", "#d6d3d1", "#e7e5e4", "#f5f5f4", "#ffffff"]
+      },
+      "notebook-ink": {
+        "role": "neutral",
+        "displayName": "Notebook Ink",
+        "canonical": "#1c1917",
+        "tonalRamp": ["#0c0a09", "#1c1917", "#292524", "#44403c", "#78716c", "#a8a29e", "#d6d3d1", "#f5f5f4"]
+      },
+      "notebook-ink-secondary": {
+        "role": "neutral",
+        "displayName": "Notebook Ink Secondary",
+        "canonical": "#57534e",
+        "tonalRamp": ["#1c1917", "#292524", "#44403c", "#57534e", "#78716c", "#a8a29e", "#d6d3d1", "#e7e5e4"]
+      },
+      "notebook-ink-muted": {
+        "role": "neutral",
+        "displayName": "Notebook Ink Muted",
+        "canonical": "#a8a29e",
+        "tonalRamp": ["#44403c", "#57534e", "#78716c", "#a8a29e", "#d6d3d1", "#e7e5e4", "#f5f5f4", "#fafaf9"]
+      },
+      "soft-rule": {
+        "role": "neutral",
+        "displayName": "Soft Rule",
+        "canonical": "#e7e5e4",
+        "tonalRamp": ["#78716c", "#a8a29e", "#d6d3d1", "#e7e5e4", "#f5f5f4", "#fafaf9", "#fafaf9", "#ffffff"]
+      },
+      "on-tint": {
+        "role": "neutral",
+        "displayName": "On Tint",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#1c1917", "#44403c", "#a8a29e", "#e7e5e4", "#f5f5f4", "#fafaf9", "#ffffff", "#ffffff"]
+      }
+    },
+    "typographyMeta": {
+      "title": { "displayName": "Title", "purpose": "Screen-level emphasis when not using native header titles." },
+      "headline": { "displayName": "Headline", "purpose": "Recipe titles and in-content section heads." },
+      "body": { "displayName": "Body", "purpose": "Primary reading copy, empty and error messages." },
+      "caption": { "displayName": "Caption", "purpose": "Filter labels, meta lines, chip and badge text." }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "press-opacity",
+        "value": "opacity 0.7–0.8 on press",
+        "purpose": "Default press feedback for pills, rows, and header actions; no lift."
+      }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Filter Chip Idle",
+      "kind": "chip",
+      "refersTo": "chip-idle",
+      "description": "Calm pill for meal, ingredient, or favorites filters when unselected.",
+      "html": "<button type=\"button\" class=\"ds-chip-idle\">Завтрак</button>",
+      "css": ".ds-chip-idle { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--color-border, #e7e5e4); background: var(--color-surface-elevated, #ffffff); color: var(--color-label-secondary, #57534e); font-size: 13px; font-weight: 500; line-height: 18px; } .ds-chip-idle:hover { opacity: 0.8; } .ds-chip-idle:focus-visible { outline: 2px solid var(--color-brand, #f43f5e); outline-offset: 2px; }"
+    },
+    {
+      "name": "Filter Chip Selected",
+      "kind": "chip",
+      "refersTo": "chip-selected",
+      "description": "Care Rose selected state for meal and ingredient chips.",
+      "html": "<button type=\"button\" class=\"ds-chip-selected\" aria-pressed=\"true\">Обед</button>",
+      "css": ".ds-chip-selected { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--color-brand, #f43f5e); background: var(--color-brand, #f43f5e); color: var(--color-on-tint, #ffffff); font-size: 13px; font-weight: 500; line-height: 18px; } .ds-chip-selected:hover { opacity: 0.8; } .ds-chip-selected:focus-visible { outline: 2px solid var(--color-brand, #f43f5e); outline-offset: 2px; }"
+    },
+    {
+      "name": "Allergen Chip Selected",
+      "kind": "chip",
+      "refersTo": "chip-allergen-selected",
+      "description": "Allergy Signal selected state for exclusion filters.",
+      "html": "<button type=\"button\" class=\"ds-chip-allergen\" aria-pressed=\"true\">Молоко</button>",
+      "css": ".ds-chip-allergen { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--color-danger, #ef4444); background: var(--color-danger, #ef4444); color: var(--color-on-tint, #ffffff); font-size: 13px; font-weight: 500; line-height: 18px; } .ds-chip-allergen:hover { opacity: 0.8; } .ds-chip-allergen:focus-visible { outline: 2px solid var(--color-danger, #ef4444); outline-offset: 2px; }"
+    },
+    {
+      "name": "Recipe Row",
+      "kind": "card",
+      "refersTo": "recipe-row",
+      "description": "Flat notebook strip: badges, title, age/calorie meta; no shadow.",
+      "html": "<article class=\"ds-recipe-row\"><span class=\"ds-badge-allergen\">Аллергены</span><h3 class=\"ds-recipe-title\">Пюре из кабачка</h3><p class=\"ds-recipe-meta\">С 6 мес. · 45 ккал / 100 г</p></article>",
+      "css": ".ds-recipe-row { background: var(--color-surface-elevated, #ffffff); border-bottom: 1px solid color-mix(in srgb, var(--color-border, #e7e5e4) 50%, transparent); padding: 14px 16px; } .ds-badge-allergen { display: inline-block; border-radius: 9999px; background: var(--color-danger-soft, #fef2f2); color: var(--color-danger, #ef4444); font-size: 13px; font-weight: 600; line-height: 18px; padding: 2px 10px; margin-bottom: 6px; } .ds-recipe-title { margin: 0; color: var(--color-label, #1c1917); font-size: 17px; font-weight: 600; line-height: 22px; } .ds-recipe-meta { margin: 4px 0 0; color: var(--color-label-secondary, #57534e); font-size: 13px; font-weight: 400; line-height: 18px; } .ds-recipe-row:focus-within { background: var(--color-surface, #f9fafb); }"
+    },
+    {
+      "name": "Premium Badge",
+      "kind": "custom",
+      "refersTo": "badge-premium",
+      "description": "Premium Amber soft wash pill for tier status only.",
+      "html": "<span class=\"ds-badge-premium\">Премиум</span>",
+      "css": ".ds-badge-premium { display: inline-block; border-radius: 9999px; background: var(--color-warning-soft, #fffbeb); color: var(--color-warning, #b45309); font-size: 13px; font-weight: 600; line-height: 18px; padding: 2px 10px; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Care Rose primary action for dialogs and commits.",
+      "html": "<button type=\"button\" class=\"ds-btn-primary\">Сохранить</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 14px 16px; border: none; border-radius: 16px; background: var(--color-brand, #f43f5e); color: var(--color-on-tint, #ffffff); font-size: 17px; font-weight: 600; line-height: 22px; } .ds-btn-primary:hover { opacity: 0.8; } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-brand, #f43f5e); outline-offset: 2px; } .ds-btn-primary:active { opacity: 0.7; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Bordered cancel/secondary action paired with primary.",
+      "html": "<button type=\"button\" class=\"ds-btn-secondary\">Отмена</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--color-border, #e7e5e4); background: var(--color-surface-elevated, #ffffff); color: var(--color-label, #1c1917); font-size: 17px; font-weight: 600; line-height: 22px; } .ds-btn-secondary:hover { opacity: 0.8; } .ds-btn-secondary:focus-visible { outline: 2px solid var(--color-brand, #f43f5e); outline-offset: 2px; }"
+    },
+    {
+      "name": "Header Text Action",
+      "kind": "nav",
+      "refersTo": "chip-selected",
+      "description": "Care Rose text action in native stack headerRight (e.g. Сбросить).",
+      "html": "<button type=\"button\" class=\"ds-header-action\">Сбросить</button>",
+      "css": ".ds-header-action { min-height: 44px; padding: 0 4px; border: none; background: transparent; color: var(--color-brand, #f43f5e); font-size: 13px; font-weight: 500; line-height: 18px; } .ds-header-action:hover { opacity: 0.7; } .ds-header-action:focus-visible { outline: 2px solid var(--color-brand, #f43f5e); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Тетрадь прикорма с источниками",
+    "overview": "The parent-facing UI reads like a trustworthy feeding notebook: calm, caring, and sure of itself. Care Rose marks action and selection; Allergy Signal and Premium Amber speak only when safety or tier status matters. Surfaces stay light — Clinic Mist behind Notebook Page rows — so meal-time scanning stays fast.\n\nDensity is list-first and flat. Filters are restrained pills; recipes are flat rows separated by Soft Rule hairlines, not lifted cards. Native stack chrome carries navigation; brand tint is Care Rose, titles are Notebook Ink. The system rejects heavy cardboard cards with drop shadows, cartoon kid-app clutter and neon accents, and any dark parent UI.",
+    "keyCharacteristics": [
+      "Trust-first notebook metaphor (sources, clear warnings, no toy energy)",
+      "Light-only parent surfaces",
+      "Calm pills and flat rows",
+      "Flat + tonal depth (soft fills + hairlines; no drop shadows on product UI)",
+      "Semantic soft washes for allergen and premium status"
+    ],
+    "rules": [
+      {
+        "name": "The One Voice Rule",
+        "body": "Care Rose is the only decorative accent. Allergy Signal and Premium Amber appear only for their semantic jobs.",
+        "section": "colors"
+      },
+      {
+        "name": "The Light Parent Rule",
+        "body": "Parent-facing screens stay light-only. Do not introduce dark surfaces outside the admin tooling island.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ramp Rule",
+        "body": "Prefer type-title / type-headline / type-body / type-caption (or matching text-title… utilities) over ad-hoc size classes on parent screens.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces rest flat. Do not reintroduce shadow-* on parent cards, rows, or chips.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Pill Filter Rule",
+        "body": "Filter and status chips are pills. Do not square them off for variety.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do keep parent UI light-only and flat + tonal (hairlines + soft fills).",
+      "Do use Care Rose only as the interactive accent; reserve Allergy Signal and Premium Amber for their meanings.",
+      "Do show allergen status with substitutes available in the flow — never a bare danger chip as the whole story on detail.",
+      "Do keep chips as calm pills with ≥44pt targets and shared FilterChip where possible.",
+      "Do prefer the semantic type ramp and token colors (brand, danger, surface, label, border) over raw Tailwind palette classes on parent screens."
+    ],
+    "donts": [
+      "Don't use heavy shadowed “cardboard” cards on parent screens.",
+      "Don't ship cartoon clutter, emoji-as-icons, or neon/kid-app palettes.",
+      "Don't introduce dark parent chrome (admin stays an isolated island).",
+      "Don't hardcode hex in screen markup — use tokens / colors.* for non-className props.",
+      "Don't invent a second brand accent or treat Premium Amber as decoration."
+    ]
+  }
+}
