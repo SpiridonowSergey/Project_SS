@@ -14,23 +14,23 @@
 - **Тарелки** — шаблоны сбалансированного рациона с заменой продуктов внутри категории.
 - **Профиль** — имя мамы, дата рождения ребёнка, персональное приветствие и возраст малыша на Home.
 
-## Текущая версия (v0.5 — Care Rose + фильтры каталога)
+## Текущая версия (v0.6 — каталог фильтров + soft cards)
 
-Рецепты и этапы прикорма читаются из **Supabase**. Локально остаются моки аллергенов, источников гида и шаблонов тарелок; пользовательские данные (онбординг, избранное, прогресс гида, замены в тарелке) — в Zustand + AsyncStorage.
+Рецепты и этапы прикорма читаются из **Supabase**. Если `feeding_stages` пуст, гид падает обратно на локальный `MOCK_FEEDING_STAGES`. Локально остаются моки аллергенов, источников гида и шаблонов тарелок; пользовательские данные (онбординг, избранное, прогресс гида, замены в тарелке) — в Zustand + AsyncStorage.
 
-Визуальный язык зафиксирован в `DESIGN.md` (**Care Rose**, light-only, flat + tonal). Каталог рецептов доведён до спокойных pills-фильтров, плоских list-row и сводки активных фильтров.
+Визуальный язык зафиксирован в `DESIGN.md` (**Care Rose**, light-only). Клиентские поверхности (Home, рецепты, гид, тарелки, профиль) используют elevated-карточки `bg-surface-elevated` + `shadow-sm`.
 
 | Модуль | Статус |
 | --- | --- |
 | Онбординг + защита роутов | готово (persist) |
-| Home с именем и возрастом ребёнка | готово |
-| Каталог рецептов + фильтры + избранное | готово (Supabase + toggle meal / sheet) |
-| Экран рецепта `/recipe/[id]` | готово (flat sections, без elevated-карточек) |
+| Home с именем и возрастом ребёнка | готово (soft cards) |
+| Каталог рецептов + фильтры + избранное | готово (Supabase; meal toggle / sheet / active chips) |
+| Экран рецепта `/recipe/[id]` | готово (flat sections под native header) |
 | Аллергены: чипы + bottom sheet с заменами | готово (локальные `MOCK_ALLERGENS`) |
-| Гид по прикорму + прогресс «Введено» | готово (этапы из Supabase, прогресс persist) |
-| Конструктор тарелок | готово (моки шаблонов) |
+| Гид по прикорму + прогресс «Введено» | готово (Supabase + mock fallback, прогресс persist) |
+| Конструктор тарелок | готово (моки шаблонов, soft cards) |
 | Дизайн: токены + type ramp + Care Rose | готово (`DESIGN.md`, `global.css`) |
-| Дизайн: native header recipes / recipe / profile | готово |
+| Дизайн: native headers + soft elevated cards | готово |
 | i18n | ещё нет |
 | Entitlements / premium-gate | ещё нет (`isPremium` есть в данных) |
 | Auth Supabase | ещё нет (только anon-клиент для чтения) |
@@ -39,19 +39,19 @@
 
 Источник правды: `DESIGN.md` + CSS-переменные в `src/global.css` + Tailwind (`tailwind.config.js`) + JS-зеркало `src/theme/colors.ts`.
 
-**Care Rose (light-only, flat + tonal):**
+**Care Rose (light-only):**
 
 - Акцент взаимодействия — `brand` (Care Rose); мягкая заливка — `brand-soft`.
 - Аллергены — только `danger` / `danger-soft`; premium — `warning` / `warning-soft`.
 - Текст на tint — `onTint`; фоны — `surface` (Clinic Mist) и `surface-elevated` (Notebook Page).
 - Типографика: `type-title` / `type-headline` / `type-body` / `type-caption`.
-- Без drop-shadow на parent UI; глубина — soft fills + `border-border/50`.
-- Фильтры и статусы — pills (`rounded-full`); строки рецептов — плоские strips.
+- Карточки списков и хаба — `rounded-2xl bg-surface-elevated … shadow-sm`.
+- Фильтры и статусы — pills (`rounded-full`).
 
 **Навигация:**
 
-- `recipes`, `recipe/[id]`, `profile` — нативный Stack header (системная «Назад»).
-- На `/recipes` при активных фильтрах — «Сбросить» в `headerRight`.
+- Native Stack header: `recipes`, `recipe/[id]`, `feeding-guide`, `plates`, `profile`.
+- На `/recipes` при `hasActiveFilters` — «Сбросить» только в `headerRight` (полный сброс).
 
 ## Экраны и сценарии
 
@@ -64,11 +64,11 @@
 ### Home (`/`)
 
 - «Привет, {имя}!» и возраст малыша
-- Ссылки: Рецепты, Гид по прикорму, Тарелки, Профиль
+- Ссылки-карточки: Рецепты, Гид по прикорму, Тарелки, Профиль
 
 ### Рецепты (`/recipes`)
 
-Каталог — главный доработанный сценарий текущей версии.
+Каталог — основной сценарий текущей версии.
 
 **Данные:** `useRecipes` → Supabase `recipes` → `useRecipesFilters`.
 
@@ -76,45 +76,51 @@
 
 1. Чип «Избранное» (toggle).
 2. Горизонтальный ряд приёмов пищи: Завтрак / Обед / Ужин / Перекус (без «Все»).
-3. Кнопка «Настроить фильтры» → sheet с аллергенами и ингредиентами.
+3. Кнопка «Настроить фильтры» → advanced sheet.
 
 **Логика** (`useRecipesFilters`):
 
-- Приём пищи — одиночный выбор с **toggle в `null`**: повторный тап снимает фильтр, показываются все meal types.
+- Приём пищи — одиночный выбор с **toggle в `null`**: повторный тап снимает фильтр.
 - Аллергены / ингредиенты — multi-select через `toggleId` (ингредиенты: логика **И**).
 - Избранное — фильтр по `useFavoritesStore`.
 
 **Сводка активных фильтров** (`RecipesActiveFilters`):
 
-- Показывается только если есть активные фильтры.
-- Спокойные tonal-пилюли с `close-circle` внутри (brand-soft / danger-soft / нейтраль).
-- Сброс по одному фильтру или «Сбросить всё».
+- Видна только при активных фильтрах.
+- Tonal-чипы с крестиком: сброс **только этого** фильтра (`toggleAllergen` / `toggleIngredient` / meal / favorites).
+- Полный сброс — кнопка «Сбросить» в native `headerRight` (не дублируется под чипами).
+- В empty-state списка остаётся CTA «Сбросить фильтры».
 
-**Список:** плоские `RecipeCard` (list-row, без теней); сердечко избранного отдельно от перехода в деталку.
+**Advanced sheet** (`RecipesAdvancedFiltersSheet`, `@gorhom/bottom-sheet`):
+
+- `enableDynamicSizing` + `maxDynamicContentSize` (~90% экрана).
+- Список аллергенов/ингредиентов скроллится; «Готово» закреплена в `BottomSheetFooter` с учётом safe area.
+
+**Список:** `RecipeCard` — elevated soft card; сердечко избранного отдельно от перехода в деталку.
 
 ### Рецепт (`/recipe/[id]`)
 
 - Нативный header: title = название рецепта
-- `useRecipe(id)`; контент на `bg-surface` без elevated-карточек
+- `useRecipe(id)`; контент на `bg-surface`
 - Секции через hairline (`border-b border-border/50`): meta, аллергены + substitutes sheet, ингредиенты, safeServing, шаги
 - `contentInsetAdjustmentBehavior="automatic"` под native header
 
 ### Профиль (`/profile`)
 
 - Нативный header: title «Профиль»
-- Плоский блок данных мамы/ребёнка (без shadow-card)
-- Long-press по версии → PIN-gate админки (`AdminPinModal` на токенах)
+- Elevated-карточка данных мамы/ребёнка
+- Версия приложения внизу экрана; long-press по версии → PIN-gate админки (`AdminPinModal`)
 
 ### Гид по прикорму (`/feeding-guide`)
 
-- Этапы из `feeding_stages` через `useFeedingGuide`
-- Switch «Введено», прогресс-бар, persist прогресса
+- Этапы из `feeding_stages` через `useFeedingGuide`; при пустом ответе — `MOCK_FEEDING_STAGES`
+- Soft cards этапов + прогресс-бар; Switch «Введено», persist прогресса
 - Источники пока из локального `SOURCES` по `sourceId`
 - Дисклеймер: не заменяет консультацию педиатра
 
 ### Тарелки (`/plates`, `/plate/[id]`)
 
-- Шаблоны из `PLATE_TEMPLATES`
+- Шаблоны из `PLATE_TEMPLATES` (soft cards)
 - Слоты: овощи / белок / углеводы
 - Замена продукта только внутри категории (`SUBSTITUTES`), баланс сохраняется
 
@@ -133,7 +139,7 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=...
 | Таблица | Хук | Маппинг |
 | --- | --- | --- |
 | `recipes` | `useRecipes`, `useRecipe` | snake_case → `Recipe` (`mapRecipe`) |
-| `feeding_stages` | `useFeedingGuide` | snake_case → `FeedingStage` (`mapFeedingStage`) |
+| `feeding_stages` | `useFeedingGuide` | snake_case → `FeedingStage` (`mapFeedingStage`); пустой список → mock |
 
 После смены `.env` перезапустите Metro с очисткой кэша: `npx expo start -c`.
 
@@ -163,7 +169,7 @@ src/
     _layout.tsx              # QueryClient, GestureHandler, Stack.Protected, headers
     index.tsx                # Home
     (auth)/onboarding.tsx
-    recipes.tsx              # каталог + фильтры + active pills
+    recipes.tsx              # каталог + фильтры + active chips + sheet
     recipe/[id].tsx
     feeding-guide.tsx
     plates.tsx
@@ -209,10 +215,9 @@ npx expo start
 
 ## Что дальше
 
-- Дотянуть Care Rose на Home / feeding-guide / plates / onboarding / admin
-- Profile как settings-list; PIN в native formSheet
 - Auth и пользовательские данные в Supabase
 - Источники гида и аллергены из БД
+- Profile как settings-list; PIN в native formSheet
 - i18n
 - `useEntitlement` для premium
 - Persist / синхронизация кастомных тарелок
