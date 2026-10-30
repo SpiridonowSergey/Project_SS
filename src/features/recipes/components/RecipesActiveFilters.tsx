@@ -9,6 +9,8 @@ import {
 } from '@/features/recipes/constants/filters';
 import { colors } from '@/theme';
 
+type ActiveTone = 'brand' | 'danger' | 'neutral';
+
 type RecipesActiveFiltersProps = {
   mealType: MealTypeFilter;
   favoritesOnly: boolean;
@@ -18,26 +20,50 @@ type RecipesActiveFiltersProps = {
   onClearFavorites: () => void;
   onClearAllergen: (id: string) => void;
   onClearIngredient: (id: string) => void;
-  onResetAll: () => void;
 };
 
-function ActiveFilterChip({
+function ActiveFilterPill({
   label,
+  tone = 'neutral',
   onClear,
   accessibilityLabel,
 }: {
   label: string;
+  tone?: ActiveTone;
   onClear: () => void;
   accessibilityLabel: string;
 }) {
+  const shellClassName =
+    tone === 'brand'
+      ? 'bg-brand-soft'
+      : tone === 'danger'
+        ? 'bg-danger-soft'
+        : 'border border-border/50 bg-surface-elevated';
+
+  const labelClassName =
+    tone === 'brand'
+      ? 'text-brand'
+      : tone === 'danger'
+        ? 'text-danger'
+        : 'text-label-secondary';
+
+  const iconColor =
+    tone === 'brand'
+      ? colors.brand
+      : tone === 'danger'
+        ? colors.danger
+        : colors.labelMuted;
+
   return (
     <Pressable
       onPress={onClear}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      className="min-h-9 flex-row items-center gap-1.5 rounded-full bg-surface px-2.5 active:opacity-70">
-      <Text className="type-caption text-label-secondary">{label}</Text>
-      <Ionicons name="close-circle" size={16} color={colors.labelMuted} />
+      className={`min-h-11 flex-row items-center gap-1 rounded-full py-1.5 pl-3 pr-2 active:opacity-70 ${shellClassName}`}>
+      <Text className={`type-caption font-medium ${labelClassName}`}>{label}</Text>
+      <View className="h-7 w-7 items-center justify-center">
+        <Ionicons name="close-circle" size={18} color={iconColor} />
+      </View>
     </Pressable>
   );
 }
@@ -51,7 +77,6 @@ export function RecipesActiveFilters({
   onClearFavorites,
   onClearAllergen,
   onClearIngredient,
-  onResetAll,
 }: RecipesActiveFiltersProps) {
   const mealLabel = MEAL_TYPE_FILTERS.find((filter) => filter.id === mealType)?.label;
   const allergenLabels = excludedAllergenIds
@@ -74,81 +99,45 @@ export function RecipesActiveFilters({
     return null;
   }
 
-  const activeGroupCount =
-    (favoritesOnly ? 1 : 0) +
-    (mealType !== null ? 1 : 0) +
-    allergenLabels.length +
-    ingredientLabels.length;
-
   return (
-    <View className="gap-3 rounded-2xl bg-surface-elevated p-3">
+    <View className="flex-row flex-wrap gap-2">
       {favoritesOnly ? (
-        <View className="gap-1.5">
-          <Text className="type-caption text-label-muted">Избранное</Text>
-          <View className="flex-row flex-wrap gap-2">
-            <ActiveFilterChip
-              label="Только избранное"
-              onClear={onClearFavorites}
-              accessibilityLabel="Убрать фильтр избранного"
-            />
-          </View>
-        </View>
+        <ActiveFilterPill
+          label="Избранное"
+          tone="brand"
+          onClear={onClearFavorites}
+          accessibilityLabel="Убрать фильтр избранного"
+        />
       ) : null}
 
       {mealLabel ? (
-        <View className="gap-1.5">
-          <Text className="type-caption text-label-muted">Выбрано</Text>
-          <View className="flex-row flex-wrap gap-2">
-            <ActiveFilterChip
-              label={mealLabel}
-              onClear={onClearMealType}
-              accessibilityLabel={`Убрать фильтр ${mealLabel}`}
-            />
-          </View>
-        </View>
+        <ActiveFilterPill
+          label={mealLabel}
+          tone="brand"
+          onClear={onClearMealType}
+          accessibilityLabel={`Убрать фильтр ${mealLabel}`}
+        />
       ) : null}
 
-      {allergenLabels.length > 0 ? (
-        <View className="gap-1.5">
-          <Text className="type-caption text-label-muted">Исключено</Text>
-          <View className="flex-row flex-wrap gap-2">
-            {allergenLabels.map((allergen) => (
-              <ActiveFilterChip
-                key={allergen.id}
-                label={allergen.label}
-                onClear={() => onClearAllergen(allergen.id)}
-                accessibilityLabel={`Убрать исключение аллергена ${allergen.label}`}
-              />
-            ))}
-          </View>
-        </View>
-      ) : null}
+      {allergenLabels.map((allergen) => (
+        <ActiveFilterPill
+          key={allergen.id}
+          label={allergen.label}
+          tone="danger"
+          onClear={() => onClearAllergen(allergen.id)}
+          accessibilityLabel={`Убрать исключение аллергена ${allergen.label}`}
+        />
+      ))}
 
-      {ingredientLabels.length > 0 ? (
-        <View className="gap-1.5">
-          <Text className="type-caption text-label-muted">Ингредиенты</Text>
-          <View className="flex-row flex-wrap gap-2">
-            {ingredientLabels.map((ingredient) => (
-              <ActiveFilterChip
-                key={ingredient.id}
-                label={ingredient.label}
-                onClear={() => onClearIngredient(ingredient.id)}
-                accessibilityLabel={`Убрать ингредиент ${ingredient.label}`}
-              />
-            ))}
-          </View>
-        </View>
-      ) : null}
-
-      {activeGroupCount > 1 ? (
-        <Pressable
-          onPress={onResetAll}
-          accessibilityRole="button"
-          accessibilityLabel="Сбросить все фильтры"
-          className="self-start active:opacity-70">
-          <Text className="type-caption font-medium text-brand">Сбросить всё</Text>
-        </Pressable>
-      ) : null}
+      {ingredientLabels.map((ingredient) => (
+        <ActiveFilterPill
+          key={ingredient.id}
+          label={ingredient.label}
+          tone="neutral"
+          onClear={() => onClearIngredient(ingredient.id)}
+          accessibilityLabel={`Убрать ингредиент ${ingredient.label}`}
+        />
+      ))}
     </View>
   );
 }

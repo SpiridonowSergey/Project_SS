@@ -62,7 +62,6 @@ export default function RecipesScreen() {
                 onClearFavorites={toggleFavoritesOnly}
                 onClearAllergen={toggleAllergen}
                 onClearIngredient={toggleIngredient}
-                onResetAll={resetFilters}
               />
             </View>
           ) : undefined

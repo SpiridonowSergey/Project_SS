@@ -67,13 +67,30 @@ function RootNavigator() {
             headerBackButtonDisplayMode: 'minimal',
           }}
         />
-        <Stack.Screen name="feeding-guide" options={{ headerShown: false }} />
-        <Stack.Screen name="plates" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="feeding-guide"
+          options={{
+            headerShown: true,
+            headerTransparent: false,
+            title: 'Гид по прикорму',
+            headerBackButtonDisplayMode: 'minimal',
+          }}
+        />
+        <Stack.Screen
+          name="plates"
+          options={{
+            headerShown: true,
+            headerTransparent: false,
+            title: 'Тарелки',
+            headerBackButtonDisplayMode: 'minimal',
+          }}
+        />
         <Stack.Screen name="plate/[id]" options={{ headerShown: false }} />
         <Stack.Screen
           name="profile"
           options={{
             headerShown: true,
+            headerTransparent: false,
             title: 'Профиль',
             headerBackButtonDisplayMode: 'minimal',
           }}

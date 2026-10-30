@@ -18,7 +18,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
   const accentClass = MEAL_TYPE_ACCENT_CLASS[recipe.mealType];
 
   return (
-    <View className="rounded-2xl bg-surface-elevated p-4">
+    <View className="rounded-2xl bg-surface-elevated p-4 shadow-sm">
       <View className="flex-row gap-3">
         <View className={`mt-1.5 h-2.5 w-2.5 rounded-full ${accentClass}`} />
 

@@ -1,10 +1,13 @@
 import BottomSheet, {
   BottomSheetBackdrop,
+  BottomSheetFooter,
   BottomSheetScrollView,
   type BottomSheetBackdropProps,
+  type BottomSheetFooterProps,
 } from '@gorhom/bottom-sheet';
-import { useCallback, useMemo, useRef } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { useCallback, useRef } from 'react';
+import { Pressable, Text, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FilterChip } from '@/features/recipes/components/FilterChip';
 import {
@@ -12,6 +15,8 @@ import {
   INGREDIENT_FILTERS,
 } from '@/features/recipes/constants/filters';
 import { colors } from '@/theme';
+
+const FOOTER_CONTENT_HEIGHT = 68;
 
 type RecipesAdvancedFiltersSheetProps = {
   excludedAllergenIds: string[];
@@ -29,7 +34,15 @@ export function RecipesAdvancedFiltersSheet({
   onClose,
 }: RecipesAdvancedFiltersSheetProps) {
   const sheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['55%', '78%'], []);
+  const insets = useSafeAreaInsets();
+  const { height: windowHeight } = useWindowDimensions();
+  const bottomInset = Math.max(insets.bottom, 12);
+  const maxDynamicContentSize = Math.round(windowHeight * 0.9);
+
+  const handleDone = useCallback(() => {
+    sheetRef.current?.close();
+    onClose();
+  }, [onClose]);
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
@@ -43,23 +56,47 @@ export function RecipesAdvancedFiltersSheet({
     [],
   );
 
+  const renderFooter = useCallback(
+    (props: BottomSheetFooterProps) => (
+      <BottomSheetFooter {...props} bottomInset={bottomInset}>
+        <View className="border-t border-border/40 bg-surface-elevated px-4 pb-3 pt-3">
+          <Pressable
+            onPress={handleDone}
+            accessibilityRole="button"
+            accessibilityLabel="Готово"
+            className="min-h-11 items-center justify-center rounded-2xl bg-brand px-5 active:opacity-80">
+            <Text className="type-headline text-onTint">Готово</Text>
+          </Pressable>
+        </View>
+      </BottomSheetFooter>
+    ),
+    [bottomInset, handleDone],
+  );
+
   return (
     <BottomSheet
       ref={sheetRef}
       index={0}
-      snapPoints={snapPoints}
+      enableDynamicSizing
+      maxDynamicContentSize={maxDynamicContentSize}
       enablePanDownToClose
       onClose={onClose}
       backdropComponent={renderBackdrop}
+      footerComponent={renderFooter}
       handleIndicatorStyle={{ backgroundColor: colors.border }}
       backgroundStyle={{ backgroundColor: colors.surfaceElevated }}>
-      <BottomSheetScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
+      <BottomSheetScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingTop: 4,
+          paddingBottom: FOOTER_CONTENT_HEIGHT + 8,
+        }}>
         <Text className="type-title text-label">Настроить фильтры</Text>
         <Text className="mt-1 type-caption text-label-secondary">
           Исключите аллергены и выберите ингредиенты. Условия применяются вместе.
         </Text>
 
-        <View className="mt-6 gap-6">
+        <View className="mt-5 gap-5">
           <View className="gap-2.5">
             <Text className="type-headline text-label">Аллергены</Text>
             <Text className="type-caption text-label-muted">Исключить из результатов</Text>
@@ -92,17 +129,6 @@ export function RecipesAdvancedFiltersSheet({
             </View>
           </View>
         </View>
-
-        <Pressable
-          onPress={() => {
-            sheetRef.current?.close();
-            onClose();
-          }}
-          accessibilityRole="button"
-          accessibilityLabel="Готово"
-          className="mt-8 min-h-11 items-center justify-center rounded-2xl bg-brand px-5 active:opacity-80">
-          <Text className="type-headline text-onTint">Готово</Text>
-        </Pressable>
       </BottomSheetScrollView>
     </BottomSheet>
   );

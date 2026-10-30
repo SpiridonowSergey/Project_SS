@@ -14,42 +14,44 @@
 - **Тарелки** — шаблоны сбалансированного рациона с заменой продуктов внутри категории.
 - **Профиль** — имя мамы, дата рождения ребёнка, персональное приветствие и возраст малыша на Home.
 
-## Текущая версия (v0.4 — токены + нативный chrome)
+## Текущая версия (v0.5 — Care Rose + фильтры каталога)
 
 Рецепты и этапы прикорма читаются из **Supabase**. Локально остаются моки аллергенов, источников гида и шаблонов тарелок; пользовательские данные (онбординг, избранное, прогресс гида, замены в тарелке) — в Zustand + AsyncStorage.
 
-Стартовали внедрение дизайн-системы по аудиту: **Phase 0** (цветовые токены NativeWind) и **Phase 1** (нативные заголовки Stack на ключевых экранах).
+Визуальный язык зафиксирован в `DESIGN.md` (**Care Rose**, light-only, flat + tonal). Каталог рецептов доведён до спокойных pills-фильтров, плоских list-row и сводки активных фильтров.
 
 | Модуль | Статус |
 | --- | --- |
 | Онбординг + защита роутов | готово (persist) |
 | Home с именем и возрастом ребёнка | готово |
-| Каталог рецептов + фильтры + избранное | готово (данные из Supabase) |
-| Экран рецепта `/recipe/[id]` | готово (Supabase + `useRecipe`) |
+| Каталог рецептов + фильтры + избранное | готово (Supabase + toggle meal / sheet) |
+| Экран рецепта `/recipe/[id]` | готово (flat sections, без elevated-карточек) |
 | Аллергены: чипы + bottom sheet с заменами | готово (локальные `MOCK_ALLERGENS`) |
 | Гид по прикорму + прогресс «Введено» | готово (этапы из Supabase, прогресс persist) |
 | Конструктор тарелок | готово (моки шаблонов) |
-| Дизайн: CSS-токены + Tailwind colors | готово (Phase 0, light-only) |
-| Дизайн: нативный header recipes / recipe / profile | готово (Phase 1) |
+| Дизайн: токены + type ramp + Care Rose | готово (`DESIGN.md`, `global.css`) |
+| Дизайн: native header recipes / recipe / profile | готово |
 | i18n | ещё нет |
 | Entitlements / premium-gate | ещё нет (`isPremium` есть в данных) |
 | Auth Supabase | ещё нет (только anon-клиент для чтения) |
 
-## Дизайн-система (в работе)
+## Дизайн-система
 
-### Phase 0 — токены (готово)
+Источник правды: `DESIGN.md` + CSS-переменные в `src/global.css` + Tailwind (`tailwind.config.js`) + JS-зеркало `src/theme/colors.ts`.
 
-- Цвета бренда, фона, текста и danger задаются в `src/global.css` как CSS-переменные (`--color-brand`, `--color-danger`, …).
-- Тема **только light**: `color-scheme: light` в CSS, `userInterfaceStyle: "light"` в `app.json`, `darkMode: "class"` в Tailwind (без dark UI).
-- `tailwind.config.js` → `theme.extend.colors` привязан к `var(--color-*)` (`brand`, `danger`, `surface`, `label`, `border`).
-- Для props без className (`ActivityIndicator`, Ionicons и т.п.) — зеркало токенов в `src/theme/colors.ts`.
-- В UI экранов recipes / profile / recipe detail hex в разметке не хардкодим: только Tailwind-классы или `colors.*`.
+**Care Rose (light-only, flat + tonal):**
 
-### Phase 1 — навигационный chrome (готово)
+- Акцент взаимодействия — `brand` (Care Rose); мягкая заливка — `brand-soft`.
+- Аллергены — только `danger` / `danger-soft`; premium — `warning` / `warning-soft`.
+- Текст на tint — `onTint`; фоны — `surface` (Clinic Mist) и `surface-elevated` (Notebook Page).
+- Типографика: `type-title` / `type-headline` / `type-body` / `type-caption`.
+- Без drop-shadow на parent UI; глубина — soft fills + `border-border/50`.
+- Фильтры и статусы — pills (`rounded-full`); строки рецептов — плоские strips.
 
-- В `src/app/_layout.tsx` для `recipes`, `recipe/[id]`, `profile` включён стандартный Stack header (title + системная «Назад»).
-- Кастомные самодельные хедеры с `headerShown: false` на этих экранах убраны.
-- На `/recipes` кнопка «Сбросить» вынесена в `headerRight` (показывается только при активных фильтрах).
+**Навигация:**
+
+- `recipes`, `recipe/[id]`, `profile` — нативный Stack header (системная «Назад»).
+- На `/recipes` при активных фильтрах — «Сбросить» в `headerRight`.
 
 ## Экраны и сценарии
 
@@ -62,32 +64,50 @@
 ### Home (`/`)
 
 - «Привет, {имя}!» и возраст малыша
-- Ссылки: Рецепты, Гид по прикорму, Тарелки
+- Ссылки: Рецепты, Гид по прикорму, Тарелки, Профиль
 
 ### Рецепты (`/recipes`)
 
-- Нативный header: title «Рецепты», «Сбросить» в `headerRight` при активных фильтрах
-- Список из таблицы Supabase `recipes` через `useRecipes` (TanStack Query)
-- Фильтры: приём пищи, избранное, исключение аллергенов, ингредиенты (логика **И**)
-- Сердечко на карточке → `useFavoritesStore` (persist)
-- Тап по карточке → `/recipe/[id]`
+Каталог — главный доработанный сценарий текущей версии.
+
+**Данные:** `useRecipes` → Supabase `recipes` → `useRecipesFilters`.
+
+**Шапка фильтров** (`RecipesFilters`):
+
+1. Чип «Избранное» (toggle).
+2. Горизонтальный ряд приёмов пищи: Завтрак / Обед / Ужин / Перекус (без «Все»).
+3. Кнопка «Настроить фильтры» → sheet с аллергенами и ингредиентами.
+
+**Логика** (`useRecipesFilters`):
+
+- Приём пищи — одиночный выбор с **toggle в `null`**: повторный тап снимает фильтр, показываются все meal types.
+- Аллергены / ингредиенты — multi-select через `toggleId` (ингредиенты: логика **И**).
+- Избранное — фильтр по `useFavoritesStore`.
+
+**Сводка активных фильтров** (`RecipesActiveFilters`):
+
+- Показывается только если есть активные фильтры.
+- Спокойные tonal-пилюли с `close-circle` внутри (brand-soft / danger-soft / нейтраль).
+- Сброс по одному фильтру или «Сбросить всё».
+
+**Список:** плоские `RecipeCard` (list-row, без теней); сердечко избранного отдельно от перехода в деталку.
 
 ### Рецепт (`/recipe/[id]`)
 
-- Нативный header: title = название рецепта (или «Рецепт» в loading / not found)
-- Загрузка одного рецепта: `useRecipe(id)` → `recipes.select('*').eq('id', id).single()`
-- Метаданные, аллергены с заменами (modal), ингредиенты, safeServing, шаги
-- Состояния: загрузка / не найден / контент
+- Нативный header: title = название рецепта
+- `useRecipe(id)`; контент на `bg-surface` без elevated-карточек
+- Секции через hairline (`border-b border-border/50`): meta, аллергены + substitutes sheet, ингредиенты, safeServing, шаги
+- `contentInsetAdjustmentBehavior="automatic"` под native header
 
 ### Профиль (`/profile`)
 
 - Нативный header: title «Профиль»
-- Имя мамы, возраст / дата рождения ребёнка
-- Long-press по версии → PIN-gate админки
+- Плоский блок данных мамы/ребёнка (без shadow-card)
+- Long-press по версии → PIN-gate админки (`AdminPinModal` на токенах)
 
 ### Гид по прикорму (`/feeding-guide`)
 
-- Этапы из таблицы `feeding_stages` через `useFeedingGuide`
+- Этапы из `feeding_stages` через `useFeedingGuide`
 - Switch «Введено», прогресс-бар, persist прогресса
 - Источники пока из локального `SOURCES` по `sourceId`
 - Дисклеймер: не заменяет консультацию педиатра
@@ -133,31 +153,36 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=...
 - Zustand + persist + AsyncStorage
 - Supabase JS
 - `@gorhom/bottom-sheet`, DateTimePicker, `@expo/vector-icons`
-- React Hook Form + Zod (в зависимостях)
+- React Hook Form + Zod (admin-формы)
 
 ## Структура
 
 ```
 src/
   app/
-    _layout.tsx              # QueryClient, GestureHandler, Stack.Protected
+    _layout.tsx              # QueryClient, GestureHandler, Stack.Protected, headers
     index.tsx                # Home
     (auth)/onboarding.tsx
-    recipes.tsx
+    recipes.tsx              # каталог + фильтры + active pills
     recipe/[id].tsx
     feeding-guide.tsx
     plates.tsx
     plate/[id].tsx
+    profile.tsx
+    admin.tsx
   features/
-    recipes/                 # api, hooks, filters, favorites, UI
-    feeding-guide/           # api, progress store, UI
-    allergens/               # modal + mock allergens
-    plates/                  # templates, substitutes, UI
-    user/                    # onboarding store, age utils
+    recipes/                 # api, filters, favorites, RecipeCard, sheets
+    feeding-guide/
+    allergens/
+    plates/
+    user/
+    admin/
   shared/lib/supabase.ts
-  theme/                     # JS-зеркало цветовых токенов
+  theme/colors.ts            # JS-зеркало токенов
   types/domain.ts
-  global.css                 # CSS-переменные (light-only)
+  global.css                 # CSS vars + type-* utilities
+DESIGN.md                    # Care Rose design system
+PRODUCT.md                   # product context (Impeccable)
 ```
 
 Правила: `.agents/skills/AGENTS.md` — тонкие экраны, хуки в фичах, фичи не импортируют друг друга, рекомендации прикорма с `sourceId`, аллергены всегда с substitutes.
@@ -184,8 +209,8 @@ npx expo start
 
 ## Что дальше
 
-- Дизайн Phase 2+: сжатие фильтров, quieter recipe rows, profile как settings-list, PIN в formSheet
-- Распространить токены `colors.*` на остальные экраны (admin, feeding-guide, onboarding, plates)
+- Дотянуть Care Rose на Home / feeding-guide / plates / onboarding / admin
+- Profile как settings-list; PIN в native formSheet
 - Auth и пользовательские данные в Supabase
 - Источники гида и аллергены из БД
 - i18n

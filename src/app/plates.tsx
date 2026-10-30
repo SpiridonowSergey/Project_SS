@@ -1,28 +1,35 @@
+import { Stack } from 'expo-router';
 import { FlatList, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PlateTemplateCard } from '@/features/plates/components/PlateTemplateCard';
 import { PLATE_TEMPLATES } from '@/features/plates/mockData';
 
 export default function PlatesScreen() {
   return (
-    <View className="flex-1 bg-gray-50">
-      <SafeAreaView style={{ flex: 1 }}>
-        <View className="gap-2 px-4 pb-2 pt-4">
-          <Text className="text-3xl font-bold text-stone-900">Тарелки</Text>
-          <Text className="text-sm text-stone-500">
-            Выберите шаблон сбалансированной тарелки и при необходимости замените продукты внутри
-            категории.
-          </Text>
-        </View>
-
+    <>
+      <View className="flex-1 bg-surface">
         <FlatList
           data={PLATE_TEMPLATES}
           keyExtractor={(item) => item.id}
-          contentContainerClassName="gap-3 px-4 pb-8"
+          contentContainerClassName="gap-3 px-4 pb-8 pt-2"
+          ListHeaderComponent={
+            <Text className="mb-4 type-body text-label-secondary">
+              Выберите шаблон сбалансированной тарелки и при необходимости замените продукты
+              внутри категории.
+            </Text>
+          }
           renderItem={({ item }) => <PlateTemplateCard template={item} />}
         />
-      </SafeAreaView>
-    </View>
+      </View>
+
+      <Stack.Screen
+        options={{
+          title: 'Тарелки',
+          headerShown: true,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+    </>
   );
 }
