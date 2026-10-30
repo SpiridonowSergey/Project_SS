@@ -8,7 +8,14 @@ import { useProfileScreen } from '@/features/user/hooks/useProfileScreen';
 import { colors } from '@/theme';
 
 export default function ProfileScreen() {
-  const { motherName, childAgeLabel, childBirthDate } = useProfileScreen();
+  const {
+    motherName,
+    childAgeLabel,
+    childBirthDate,
+    isSigningOut,
+    signOutError,
+    signOut,
+  } = useProfileScreen();
   const {
     isModalVisible,
     pin,
@@ -50,6 +57,23 @@ export default function ProfileScreen() {
             </View>
           </View>
         </View>
+
+        <Pressable
+          onPress={() => {
+            void signOut();
+          }}
+          disabled={isSigningOut}
+          accessibilityRole="button"
+          accessibilityLabel="Выйти из аккаунта"
+          className="mt-4 min-h-11 items-center justify-center rounded-2xl border border-danger/30 bg-danger-soft px-5 active:opacity-80 disabled:opacity-60">
+          <Text className="type-headline text-danger">
+            {isSigningOut ? 'Выходим…' : 'Выйти'}
+          </Text>
+        </Pressable>
+
+        {signOutError ? (
+          <Text className="mt-2 type-caption text-danger">{signOutError}</Text>
+        ) : null}
 
         <View className="flex-1" />
 

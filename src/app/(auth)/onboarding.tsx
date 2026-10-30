@@ -11,6 +11,7 @@ export default function OnboardingScreen() {
     selectedDate,
     isDatePickerVisible,
     error,
+    isSubmitting,
     setMotherName,
     openDatePicker,
     closeDatePicker,
@@ -77,9 +78,14 @@ export default function OnboardingScreen() {
           </View>
 
           <Pressable
-            onPress={submit}
-            className="items-center rounded-2xl bg-rose-500 px-5 py-4 active:opacity-80">
-            <Text className="text-base font-semibold text-white">Начать</Text>
+            onPress={() => {
+              void submit();
+            }}
+            disabled={isSubmitting}
+            className="items-center rounded-2xl bg-rose-500 px-5 py-4 active:opacity-80 disabled:opacity-60">
+            <Text className="text-base font-semibold text-white">
+              {isSubmitting ? 'Сохраняем…' : 'Начать'}
+            </Text>
           </Pressable>
         </View>
       </SafeAreaView>

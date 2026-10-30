@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { useAuthSession } from '@/features/user/hooks/useAuthSession';
 import { useStoreHydration } from '@/features/user/hooks/useStoreHydration';
 import { useUserStore } from '@/features/user/store';
 import { colors } from '@/theme';
@@ -24,11 +25,14 @@ export default function RootLayout() {
 
 function RootNavigator() {
   const hydrated = useStoreHydration();
+  const { isReady: isAuthReady, isAuthenticated } = useAuthSession();
   const isOnboarded = useUserStore((state) => state.isOnboarded);
 
-  if (!hydrated) {
+  if (!hydrated || !isAuthReady) {
     return <View className="flex-1 bg-brand-soft" />;
   }
+
+  const canAccessApp = isAuthenticated && isOnboarded;
 
   return (
     <Stack
@@ -39,7 +43,9 @@ function RootNavigator() {
         headerShadowVisible: false,
         contentStyle: { backgroundColor: colors.surface },
       }}>
-      <Stack.Protected guard={isOnboarded} redirectTo="/onboarding">
+      <Stack.Protected
+        guard={canAccessApp}
+        redirectTo={isAuthenticated ? '/onboarding' : '/login'}>
         <Stack.Screen
           name="index"
           options={{
@@ -98,7 +104,7 @@ function RootNavigator() {
         <Stack.Screen name="admin" options={{ headerShown: false }} />
       </Stack.Protected>
 
-      <Stack.Protected guard={!isOnboarded} redirectTo="/">
+      <Stack.Protected guard={!canAccessApp} redirectTo="/">
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
     </Stack>
