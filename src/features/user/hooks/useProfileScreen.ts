@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { Alert } from 'react-native';
 
 import { useUserStore } from '@/features/user/store';
 import { formatChildAge } from '@/features/user/utils/formatChildAge';
@@ -13,7 +14,7 @@ export function useProfileScreen() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
 
-  async function signOut() {
+  async function performSignOut() {
     setIsSigningOut(true);
     setSignOutError(null);
 
@@ -28,6 +29,19 @@ export function useProfileScreen() {
     resetUser();
     setIsSigningOut(false);
     router.replace('/login');
+  }
+
+  function signOut() {
+    Alert.alert('Выйти из аккаунта', 'Вы уверены, что хотите выйти?', [
+      { text: 'Отмена', style: 'cancel' },
+      {
+        text: 'Выйти',
+        style: 'destructive',
+        onPress: () => {
+          void performSignOut();
+        },
+      },
+    ]);
   }
 
   return {

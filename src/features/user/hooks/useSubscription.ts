@@ -19,8 +19,13 @@ async function fetchSubscription(userId: string): Promise<SubscriptionResult> {
     throw error;
   }
 
-  const endDate = data.subscription_end_date ?? null;
-  const isPremium = endDate != null && new Date(endDate).getTime() > Date.now();
+  const endDate =
+    typeof data.subscription_end_date === 'string' ? data.subscription_end_date : null;
+
+  // Parse as Date; getTime()/Date.now() are UTC epoch ms — comparable across timezones.
+  const endMs = endDate != null ? new Date(endDate).getTime() : Number.NaN;
+  const nowMs = new Date().getTime();
+  const isPremium = Number.isFinite(endMs) && endMs > nowMs;
 
   return { isPremium, endDate };
 }

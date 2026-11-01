@@ -81,11 +81,10 @@ export function useLogin() {
     const { data, error } = await supabase.auth.signUp({
       email: values.email.trim(),
       password: values.password,
-      options: motherName
-        ? {
-            data: { mother_name: motherName },
-          }
-        : undefined,
+      options: {
+        emailRedirectTo: 'projectss://',
+        ...(motherName ? { data: { mother_name: motherName } } : {}),
+      },
     });
 
     if (error) {
