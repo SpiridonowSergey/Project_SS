@@ -6,6 +6,7 @@ import BottomSheet, {
 import { useCallback, useMemo, useRef } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { getProductName } from '@/shared/lib/productNames';
 import type { Allergen } from '@/types/domain';
 
 type AllergenModalProps = {
@@ -51,7 +52,9 @@ export function AllergenModal({ allergen, onClose }: AllergenModalProps) {
             <View
               key={`${allergen.id}-${substitute.productId}`}
               className="rounded-2xl bg-rose-50 px-4 py-3">
-              <Text className="text-base font-medium text-stone-900">{substitute.productId}</Text>
+              <Text className="text-base font-medium text-stone-900">
+                {getProductName(substitute.productId)}
+              </Text>
               <Text className="mt-1 text-sm text-stone-600">{substitute.note}</Text>
             </View>
           ))}

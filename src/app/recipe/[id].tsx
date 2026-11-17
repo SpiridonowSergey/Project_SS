@@ -3,10 +3,12 @@ import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-nati
 
 import { AllergenModal } from '@/features/allergens/components/AllergenModal';
 import { getAllergensByIds } from '@/features/allergens/mockData';
+import { PremiumLockCard } from '@/features/recipes/components/PremiumLockCard';
 import { RecipeHero } from '@/features/recipes/components/RecipeHero';
 import { RecipeIngredientList } from '@/features/recipes/components/RecipeIngredientList';
 import { RecipeStepsList } from '@/features/recipes/components/RecipeStepsList';
 import { useRecipeDetailScreen } from '@/features/recipes/hooks/useRecipeDetailScreen';
+import { useEntitlement } from '@/features/user/hooks/useEntitlement';
 import { colors } from '@/theme';
 
 export default function RecipeDetailScreen() {
@@ -21,6 +23,7 @@ export default function RecipeDetailScreen() {
     checkedIngredientKeys,
     toggleIngredient,
   } = useRecipeDetailScreen(id);
+  const { isPremium: hasSubscription } = useEntitlement();
 
   if (isLoading) {
     return (
@@ -47,6 +50,7 @@ export default function RecipeDetailScreen() {
 
   const allergens = getAllergensByIds(recipe.allergenIds);
   const hasAllergens = allergens.length > 0;
+  const isContentLocked = recipe.isPremium && !hasSubscription;
 
   return (
     <>
@@ -91,14 +95,20 @@ export default function RecipeDetailScreen() {
           onToggle={toggleIngredient}
         />
 
-        {recipe.safeServing ? (
-          <View className="gap-2 rounded-3xl bg-warning-soft p-5">
-            <Text className="type-headline text-warning">Безопасная подача</Text>
-            <Text className="type-body text-warning">{recipe.safeServing}</Text>
-          </View>
-        ) : null}
+        {isContentLocked ? (
+          <PremiumLockCard />
+        ) : (
+          <>
+            {recipe.safeServing ? (
+              <View className="gap-2 rounded-3xl bg-warning-soft p-5">
+                <Text className="type-headline text-warning">Безопасная подача</Text>
+                <Text className="type-body text-warning">{recipe.safeServing}</Text>
+              </View>
+            ) : null}
 
-        <RecipeStepsList recipeId={recipe.id} steps={recipe.steps} />
+            <RecipeStepsList recipeId={recipe.id} steps={recipe.steps} />
+          </>
+        )}
       </ScrollView>
 
       <Stack.Screen options={{ title: 'Рецепт', headerTransparent: false }} />

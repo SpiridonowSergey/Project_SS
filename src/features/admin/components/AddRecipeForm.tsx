@@ -16,6 +16,7 @@ import {
   UNIT_OPTIONS,
   parseOptionalNumber,
 } from '@/features/admin/schemas/recipeFormSchema';
+import { getUnitLabel } from '@/shared/lib/productNames';
 
 export function AddRecipeForm() {
   const { form, isSubmitting, submitForm } = useAddRecipeForm();
@@ -151,7 +152,7 @@ export function AddRecipeForm() {
       </View>
 
       <View className="gap-2">
-        <Text className="text-sm font-medium text-stone-300">Ссылка на изображение (imageUrl)</Text>
+        <Text className="text-sm font-medium text-stone-300">Ссылка на изображение</Text>
         <Controller
           control={control}
           name="imageUrl"
@@ -172,7 +173,7 @@ export function AddRecipeForm() {
       </View>
 
       <View className="flex-row items-center justify-between rounded-2xl border border-stone-700 bg-stone-800 px-4 py-3">
-        <Text className="text-base text-stone-200">Платный (Premium)</Text>
+        <Text className="text-base text-stone-200">Платный (премиум)</Text>
         <Controller
           control={control}
           name="isPremium"
@@ -199,7 +200,7 @@ export function AddRecipeForm() {
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="milk, gluten"
+              placeholder="например: milk, egg"
               placeholderTextColor="#78716c"
               autoCapitalize="none"
               className="rounded-2xl border border-stone-700 bg-stone-800 px-4 py-3 text-base text-white"
@@ -278,7 +279,7 @@ export function AddRecipeForm() {
                             className={`text-sm font-medium ${
                               selected ? 'text-white' : 'text-stone-400'
                             }`}>
-                            {unit}
+                            {getUnitLabel(unit)}
                           </Text>
                         </Pressable>
                       );

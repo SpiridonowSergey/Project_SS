@@ -18,16 +18,13 @@ function mapAuthErrorMessage(message: string): string {
   const normalized = message.toLowerCase();
 
   if (normalized.includes('invalid login credentials')) {
-    return 'Неверный email или пароль';
+    return 'Неверная почта или пароль';
   }
   if (normalized.includes('user already registered') || normalized.includes('already been registered')) {
     return 'Пользователь уже существует';
   }
   if (normalized.includes('email not confirmed')) {
-    return 'Подтвердите email, затем войдите';
-  }
-  if (normalized.includes('password')) {
-    return 'Неверный пароль';
+    return 'Подтвердите почту, затем войдите';
   }
 
   return message;
@@ -110,7 +107,7 @@ export function useLogin() {
 
     if (!data.session) {
       Alert.alert(
-        'Подтвердите email',
+        'Подтвердите почту',
         'Мы отправили письмо со ссылкой. После подтверждения войдите в аккаунт.',
       );
       setMode('login');

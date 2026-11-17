@@ -30,7 +30,7 @@ export function AdminPinModal({
             onChangeText={onChangePin}
             secureTextEntry
             keyboardType="number-pad"
-            placeholder="PIN-код"
+            placeholder="Код доступа"
             placeholderTextColor={colors.labelMuted}
             className="rounded-2xl border border-border bg-surface px-4 py-3 text-base text-label"
           />

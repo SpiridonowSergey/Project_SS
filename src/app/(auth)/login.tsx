@@ -70,7 +70,7 @@ export default function LoginScreen() {
 
             <View className="gap-4 rounded-2xl bg-surface-elevated p-5 shadow-sm">
               <View className="gap-2">
-                <Text className="type-caption text-label-secondary">Email</Text>
+                <Text className="type-caption text-label-secondary">Почта</Text>
                 <Controller
                   control={activeForm.control}
                   name="email"

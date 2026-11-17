@@ -1,19 +1,8 @@
-// src/features/plates/mockData.ts
-export type PlateCategory = 'vegetables' | 'protein' | 'carbs';
+import type { PlateCategory, PlateTemplate } from '@/features/plates/types';
 
-export type PlateSlot = {
-  id: string;
-  category: PlateCategory;
-  productName: string;
-  amount: string;
-};
+export type { PlateCategory, PlateSlot, PlateTemplate } from '@/features/plates/types';
 
-export type PlateTemplate = {
-  id: string;
-  name: string;
-  slots: PlateSlot[];
-};
-
+/** Local fallback when `plate_templates` is empty. */
 export const PLATE_TEMPLATES: PlateTemplate[] = [
   {
     id: 'lunch-1',

@@ -72,11 +72,12 @@
 
 ### RLS (`profiles`)
 
-Скрипт: `supabase/migrations/20251101_profiles_rls.sql`
+Скрипт: `supabase/migrations/20251101_profiles_rls.sql` (выполнить в SQL Editor)
 
-- `SELECT` / `UPDATE` / `INSERT`: `auth.uid() = id` (роль `authenticated`).
+- `SELECT` / `UPDATE`: `auth.uid() = id` (роль `authenticated`).
+- `UPDATE` на уровне колонок только для `mother_name`, `child_birth_date` (не subscription_*).
+- Клиентский `INSERT` запрещён — строку создаёт триггер `on_auth_user_created`.
 - Без `using (true)` / `with check (true)`.
-- Прогони в SQL Editor, если в Dashboard ещё открытые политики.
 
 ### Подписка
 

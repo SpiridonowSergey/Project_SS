@@ -6,6 +6,7 @@ type FeedingGuideState = {
   introducedStageIds: string[];
   toggleIntroduced: (stageId: string) => void;
   isIntroduced: (stageId: string) => boolean;
+  clearProgress: () => void;
 };
 
 export const useFeedingGuideStore = create<FeedingGuideState>()(
@@ -23,6 +24,7 @@ export const useFeedingGuideStore = create<FeedingGuideState>()(
           };
         }),
       isIntroduced: (stageId) => get().introducedStageIds.includes(stageId),
+      clearProgress: () => set({ introducedStageIds: [] }),
     }),
     {
       name: 'feeding-guide-progress',

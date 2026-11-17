@@ -7,7 +7,6 @@ import { supabase } from '@/shared/lib/supabase';
 
 export function useOnboarding() {
   const completeOnboarding = useUserStore((state) => state.completeOnboarding);
-  const setIsOnboarded = useUserStore((state) => state.setIsOnboarded);
   const setStoredChildBirthDate = useUserStore((state) => state.setChildBirthDate);
 
   const [motherName, setMotherName] = useState('');
@@ -37,38 +36,36 @@ export function useOnboarding() {
     setError(null);
     setIsSubmitting(true);
 
-    completeOnboarding({
-      motherName: trimmedName,
-      childBirthDate,
-    });
-
     const {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      setIsOnboarded(false);
       setIsSubmitting(false);
       setError(userError?.message ?? 'Не удалось определить пользователя');
       return;
     }
 
-    const { error: profileError } = await supabase
+    const { data: updated, error: profileError } = await supabase
       .from('profiles')
       .update({
         mother_name: trimmedName,
         child_birth_date: childBirthDate,
       })
-      .eq('id', user.id);
+      .eq('id', user.id)
+      .select('id');
 
-    if (profileError) {
-      setIsOnboarded(false);
+    if (profileError || !updated?.length) {
       setIsSubmitting(false);
-      setError(profileError.message);
+      setError(profileError?.message ?? 'Профиль не найден');
       return;
     }
 
+    completeOnboarding({
+      motherName: trimmedName,
+      childBirthDate,
+    });
     setIsSubmitting(false);
     router.replace('/');
   }

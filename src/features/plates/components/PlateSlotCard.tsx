@@ -1,7 +1,7 @@
 import { Pressable, Text, View } from 'react-native';
 
 import { CATEGORY_LABELS } from '@/features/plates/categoryLabels';
-import type { PlateSlot } from '@/features/plates/mockData';
+import type { PlateSlot } from '@/features/plates/types';
 
 type PlateSlotCardProps = {
   slot: PlateSlot;

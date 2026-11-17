@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 
-import type { PlateSlot, PlateTemplate } from '@/features/plates/mockData';
-
-type PlateOverrides = Record<string, string>;
+import type { PlateCustomSlots, PlateSlot, PlateTemplate } from '@/features/plates/types';
 
 type PlatesState = {
-  overridesByPlateId: Record<string, PlateOverrides>;
+  overridesByPlateId: Record<string, PlateCustomSlots>;
   replaceSlotProduct: (plateId: string, slotId: string, productName: string) => void;
   resetPlate: (plateId: string) => void;
+  clearAllOverrides: () => void;
   getResolvedSlots: (template: PlateTemplate) => PlateSlot[];
 };
 
+/** @deprecated Prefer Supabase user_plates via useUserPlate / useSaveUserPlate. */
 export const usePlatesStore = create<PlatesState>((set, get) => ({
   overridesByPlateId: {},
   replaceSlotProduct: (plateId, slotId, productName) =>
@@ -29,6 +29,7 @@ export const usePlatesStore = create<PlatesState>((set, get) => ({
       delete next[plateId];
       return { overridesByPlateId: next };
     }),
+  clearAllOverrides: () => set({ overridesByPlateId: {} }),
   getResolvedSlots: (template) => {
     const overrides = get().overridesByPlateId[template.id] ?? {};
 

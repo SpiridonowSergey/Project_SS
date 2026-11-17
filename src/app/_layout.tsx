@@ -1,6 +1,7 @@
 import '../global.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as Notifications from 'expo-notifications';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
@@ -8,8 +9,18 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useAuthSession } from '@/features/user/hooks/useAuthSession';
 import { useStoreHydration } from '@/features/user/hooks/useStoreHydration';
+import { AuthProvider } from '@/features/user/providers/AuthProvider';
 import { useUserStore } from '@/features/user/store';
 import { colors } from '@/theme';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 export default function RootLayout() {
   const [queryClient] = useState(() => new QueryClient());
@@ -17,7 +28,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
-        <RootNavigator />
+        <AuthProvider>
+          <RootNavigator />
+        </AuthProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );
@@ -25,10 +38,12 @@ export default function RootLayout() {
 
 function RootNavigator() {
   const hydrated = useStoreHydration();
-  const { isReady: isAuthReady, isAuthenticated } = useAuthSession();
+  const { isRestoringSession, isAuthenticated } = useAuthSession();
   const isOnboarded = useUserStore((state) => state.isOnboarded);
 
-  if (!hydrated || !isAuthReady) {
+  // Wait for SecureStore session + Zustand hydrate before Stack.Protected,
+  // otherwise guards flip logged-out → logged-in and trigger REMOVE_ROUTES.
+  if (!hydrated || isRestoringSession) {
     return <View className="flex-1 bg-brand-soft" />;
   }
 
@@ -98,6 +113,16 @@ function RootNavigator() {
             headerShown: true,
             headerTransparent: false,
             title: 'Профиль',
+            headerBackButtonDisplayMode: 'minimal',
+          }}
+        />
+        <Stack.Screen
+          name="paywall"
+          options={{
+            headerShown: true,
+            headerTransparent: false,
+            presentation: 'modal',
+            title: 'Premium',
             headerBackButtonDisplayMode: 'minimal',
           }}
         />

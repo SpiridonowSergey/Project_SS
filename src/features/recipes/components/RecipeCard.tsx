@@ -9,9 +9,11 @@ import type { Recipe } from '@/types/domain';
 
 type RecipeCardProps = {
   recipe: Recipe;
+  /** True when recipe is premium and the current user has no active subscription. */
+  isLocked?: boolean;
 };
 
-export function RecipeCard({ recipe }: RecipeCardProps) {
+export function RecipeCard({ recipe, isLocked = false }: RecipeCardProps) {
   const hasAllergens = recipe.allergenIds.length > 0;
   const isFavorite = useFavoritesStore((state) => state.favoriteIds.includes(recipe.id));
   const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
@@ -26,12 +28,17 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           <Link href={{ pathname: '/recipe/[id]', params: { id: recipe.id } }} asChild>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={`Рецепт ${recipe.title}`}
+              accessibilityLabel={
+                isLocked ? `Рецепт ${recipe.title}, Premium` : `Рецепт ${recipe.title}`
+              }
               className="active:opacity-80">
               {recipe.isPremium || hasAllergens ? (
                 <View className="mb-2 flex-row flex-wrap gap-2">
                   {recipe.isPremium ? (
-                    <View className="rounded-full bg-warning-soft px-2.5 py-0.5">
+                    <View className="flex-row items-center gap-1 rounded-full bg-warning-soft px-2.5 py-0.5">
+                      {isLocked ? (
+                        <Ionicons name="lock-closed" size={12} color={colors.warning} />
+                      ) : null}
                       <Text className="type-caption font-semibold text-warning">Премиум</Text>
                     </View>
                   ) : null}
@@ -59,18 +66,24 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           </Link>
         </View>
 
-        <Pressable
-          onPress={() => toggleFavorite(recipe.id)}
-          hitSlop={4}
-          accessibilityRole="button"
-          accessibilityLabel={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
-          className="h-11 w-11 items-center justify-center rounded-full bg-brand-soft active:opacity-70">
-          <Ionicons
-            name={isFavorite ? 'heart' : 'heart-outline'}
-            size={22}
-            color={isFavorite ? colors.brand : colors.labelSecondary}
-          />
-        </Pressable>
+        {isLocked ? (
+          <View className="h-11 w-11 items-center justify-center rounded-full bg-warning-soft">
+            <Ionicons name="lock-closed" size={20} color={colors.warning} />
+          </View>
+        ) : (
+          <Pressable
+            onPress={() => toggleFavorite(recipe.id)}
+            hitSlop={4}
+            accessibilityRole="button"
+            accessibilityLabel={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+            className="h-11 w-11 items-center justify-center rounded-full bg-brand-soft active:opacity-70">
+            <Ionicons
+              name={isFavorite ? 'heart' : 'heart-outline'}
+              size={22}
+              color={isFavorite ? colors.brand : colors.labelSecondary}
+            />
+          </Pressable>
+        )}
       </View>
     </View>
   );

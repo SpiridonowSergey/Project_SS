@@ -2,7 +2,7 @@ import { Link } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
 import { CATEGORY_LABELS } from '@/features/plates/categoryLabels';
-import type { PlateTemplate } from '@/features/plates/mockData';
+import type { PlateTemplate } from '@/features/plates/types';
 
 type PlateTemplateCardProps = {
   template: PlateTemplate;

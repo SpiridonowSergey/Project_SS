@@ -9,10 +9,12 @@ import { RecipesAdvancedFiltersSheet } from '@/features/recipes/components/Recip
 import { RecipesFilters } from '@/features/recipes/components/RecipesFilters';
 import { useRecipes } from '@/features/recipes/hooks/useRecipes';
 import { useRecipesFilters } from '@/features/recipes/hooks/useRecipesFilters';
+import { useEntitlement } from '@/features/user/hooks/useEntitlement';
 import { colors } from '@/theme';
 
 export default function RecipesScreen() {
   const { data, isLoading, isError, refetch, isRefetching } = useRecipes();
+  const { isPremium } = useEntitlement();
   const {
     mealType,
     favoritesOnly,
@@ -112,7 +114,9 @@ export default function RecipesScreen() {
             </View>
           )
         }
-        renderItem={({ item }) => <RecipeCard recipe={item} />}
+        renderItem={({ item }) => (
+          <RecipeCard recipe={item} isLocked={item.isPremium && !isPremium} />
+        )}
       />
 
       <Stack.Screen

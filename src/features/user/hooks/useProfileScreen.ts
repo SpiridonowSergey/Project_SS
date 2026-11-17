@@ -1,12 +1,22 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 
 import { useUserStore } from '@/features/user/store';
 import { formatChildAge } from '@/features/user/utils/formatChildAge';
+import {
+  clearLocalSessionStores,
+  type LocalSessionResetters,
+} from '@/shared/lib/clearLocalSession';
 import { supabase } from '@/shared/lib/supabase';
 
-export function useProfileScreen() {
+type UseProfileScreenOptions = {
+  localSessionResetters?: LocalSessionResetters;
+};
+
+export function useProfileScreen(options: UseProfileScreenOptions = {}) {
+  const queryClient = useQueryClient();
   const motherName = useUserStore((state) => state.motherName);
   const childBirthDate = useUserStore((state) => state.childBirthDate);
   const resetUser = useUserStore((state) => state.resetUser);
@@ -26,7 +36,11 @@ export function useProfileScreen() {
       return;
     }
 
+    queryClient.clear();
     resetUser();
+    if (options.localSessionResetters) {
+      clearLocalSessionStores(options.localSessionResetters);
+    }
     setIsSigningOut(false);
     router.replace('/login');
   }

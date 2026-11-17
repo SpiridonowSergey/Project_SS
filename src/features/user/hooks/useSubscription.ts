@@ -8,6 +8,10 @@ type SubscriptionResult = {
   endDate: string | null;
 };
 
+export function subscriptionQueryKey(userId: string | null) {
+  return ['profile', 'subscription', userId] as const;
+}
+
 async function fetchSubscription(userId: string): Promise<SubscriptionResult> {
   const { data, error } = await supabase
     .from('profiles')
@@ -34,7 +38,7 @@ export function useSubscription() {
   const { userId, isAuthenticated } = useAuthSession();
 
   const query = useQuery({
-    queryKey: ['profile', 'subscription', userId],
+    queryKey: subscriptionQueryKey(userId),
     queryFn: () => fetchSubscription(userId!),
     enabled: isAuthenticated && userId != null,
   });

@@ -6,6 +6,7 @@ type FavoritesState = {
   favoriteIds: string[];
   toggleFavorite: (id: string) => void;
   isFavorite: (id: string) => boolean;
+  clearFavorites: () => void;
 };
 
 export const useFavoritesStore = create<FavoritesState>()(
@@ -23,6 +24,7 @@ export const useFavoritesStore = create<FavoritesState>()(
           };
         }),
       isFavorite: (id) => get().favoriteIds.includes(id),
+      clearFavorites: () => set({ favoriteIds: [] }),
     }),
     {
       name: 'recipe-favorites',

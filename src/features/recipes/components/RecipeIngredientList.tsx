@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Pressable, Text, View } from 'react-native';
 
 import { ingredientKey } from '@/features/recipes/hooks/useRecipeDetailScreen';
+import { getProductName, getUnitLabel } from '@/shared/lib/productNames';
 import { colors } from '@/theme';
 import type { Ingredient } from '@/types/domain';
 
@@ -24,6 +25,8 @@ export function RecipeIngredientList({
         {ingredients.map((ingredient, index) => {
           const key = ingredientKey(ingredient.productId, ingredient.unit, index);
           const checked = checkedKeys.has(key);
+          const productName = getProductName(ingredient.productId);
+          const unitLabel = getUnitLabel(ingredient.unit);
 
           return (
             <Pressable
@@ -31,7 +34,7 @@ export function RecipeIngredientList({
               onPress={() => onToggle(key)}
               accessibilityRole="checkbox"
               accessibilityState={{ checked }}
-              accessibilityLabel={`${ingredient.productId}, ${ingredient.amount} ${ingredient.unit}`}
+              accessibilityLabel={`${productName}, ${ingredient.amount} ${unitLabel}`}
               className="min-h-11 flex-row items-center gap-3 py-2.5 active:opacity-80">
               <Ionicons
                 name={checked ? 'checkmark-circle' : 'ellipse-outline'}
@@ -41,10 +44,10 @@ export function RecipeIngredientList({
               <Text
                 className={`flex-1 type-body ${checked ? 'text-label-muted' : 'text-label'}`}
                 style={checked ? { textDecorationLine: 'line-through' } : undefined}>
-                {ingredient.productId}
+                {productName}
               </Text>
               <Text className={`type-caption ${checked ? 'text-label-muted' : 'text-label-secondary'}`}>
-                {ingredient.amount} {ingredient.unit}
+                {ingredient.amount} {unitLabel}
               </Text>
             </Pressable>
           );

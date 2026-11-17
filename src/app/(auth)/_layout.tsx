@@ -1,10 +1,15 @@
 import { Stack } from 'expo-router';
+import { View } from 'react-native';
 
 import { useAuthSession } from '@/features/user/hooks/useAuthSession';
 import { colors } from '@/theme';
 
 export default function AuthLayout() {
-  const { isAuthenticated } = useAuthSession();
+  const { isAuthenticated, isRestoringSession } = useAuthSession();
+
+  if (isRestoringSession) {
+    return <View className="flex-1 bg-brand-soft" />;
+  }
 
   return (
     <Stack

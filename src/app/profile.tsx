@@ -1,13 +1,30 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { AdminPinModal } from '@/features/admin/components/AdminPinModal';
 import { APP_VERSION } from '@/features/admin/constants';
 import { useAdminGate } from '@/features/admin/hooks/useAdminGate';
+import { useFeedingGuideStore } from '@/features/feeding-guide/store';
+import { usePlatesStore } from '@/features/plates/store';
+import { useFavoritesStore } from '@/features/recipes/store/favorites';
 import { useProfileScreen } from '@/features/user/hooks/useProfileScreen';
 import { colors } from '@/theme';
 
 export default function ProfileScreen() {
+  const clearFavorites = useFavoritesStore((state) => state.clearFavorites);
+  const clearFeedingProgress = useFeedingGuideStore((state) => state.clearProgress);
+  const clearPlateOverrides = usePlatesStore((state) => state.clearAllOverrides);
+
+  const localSessionResetters = useMemo(
+    () => ({
+      clearFavorites,
+      clearFeedingProgress,
+      clearPlateOverrides,
+    }),
+    [clearFavorites, clearFeedingProgress, clearPlateOverrides],
+  );
+
   const {
     motherName,
     childAgeLabel,
@@ -15,7 +32,7 @@ export default function ProfileScreen() {
     isSigningOut,
     signOutError,
     signOut,
-  } = useProfileScreen();
+  } = useProfileScreen({ localSessionResetters });
   const {
     isModalVisible,
     pin,

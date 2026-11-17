@@ -50,7 +50,28 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
+/** Blocks AppState auto-refresh until SecureStore session has been read. */
+let isAuthSessionReady = false;
+
+void supabase.auth.stopAutoRefresh();
+
+export function markAuthSessionReady() {
+  if (isAuthSessionReady) {
+    return;
+  }
+
+  isAuthSessionReady = true;
+
+  if (AppState.currentState === 'active') {
+    void supabase.auth.startAutoRefresh();
+  }
+}
+
 AppState.addEventListener('change', (state) => {
+  if (!isAuthSessionReady) {
+    return;
+  }
+
   if (state === 'active') {
     void supabase.auth.startAutoRefresh();
   } else {
